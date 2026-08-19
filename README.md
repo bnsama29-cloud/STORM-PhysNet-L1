@@ -6,7 +6,9 @@ Official code for the **IEEE conference** paper:
 
 Horizons are **1 h / 6 h / 12 h** on hourly GOES–OMNI. Transfer target: GSAT-19 GRASP (Indian longitude).
 
-This repository contains only the conference systems (LSTM, default Transformer, architecture-matched Transformer, STORM-Bz, and the three module ablations). It does not include Access-only probes.
+This repository contains only the conference systems (LSTM, default Transformer, architecture-matched Transformer, STORM-Bz, and the three module ablations). Headline checkpoints and CSVs cover only the seven conference systems.
+Shared source files (e.g. optional gate classes) may exist in `src/` but
+are not used for any conference table or figure.
 
 ## Key results (fifteen seeds)
 
