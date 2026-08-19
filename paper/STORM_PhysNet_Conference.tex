@@ -294,9 +294,10 @@ The ablations together indicate that the short-horizon gain is produced by the t
 \subsection{Input Noise and Missing Channels}
 Gaussian noise was added to standardized solar-wind inputs at test time
 (\(\sigma\in\{0,0.2,0.5,1.0,1.5,2.0\}\)) for Transformer, STORM-Bz,
-hybrid, and ensemble systems over fifteen seeds.
-At \(\sigma=2\), Transformer PE\(_{1\mathrm{h}}\) falls from about
-\(0.96\) to about \(0.61\), whereas STORM remains near \(0.96\).
+ensemble systems over fifteen seeds.
+Under synthetic input noise, STORM lost less 1\,h skill than the
+Transformer in a held-out probe; we do not treat that probe as a
+primary table.
 At 6\,h the ensemble and STORM also lose less skill than the Transformer.
 Zeroing feature groups (no \(B_z\); no velocity/density; no rolling
 averages) produces the same qualitative ordering: STORM holds
@@ -365,7 +366,14 @@ PE improve substantially after adaptation.}
 \textbf{Resolution.} All reported leads are integer hours on hourly data; sub-hour (e.g.\ 45\,min) supervision would require higher-cadence flux labels.
 \textbf{Data scope.} Main GOES tables use fifteen seeds with bootstrap intervals; secondary diagnostics (individual case windows, residual histograms) are illustrative. GRASP covers a limited declining-phase window; performance during solar maximum is unknown.
 
-\textbf{Comparability.} PE values are not interchangeable with daily-fluence scores reported elsewhere without matching cadence, energy channel, and baseline~\cite{b11,b12}. The default Transformer baseline is not architecture-matched to STORM; a matched control ($d_{\mathrm{model}}=128$, two layers) shows that encoder width/depth and bagging account for much of the multi-horizon PE movement.
+\textbf{Comparability.} PE values are not interchangeable with daily-fluence scores reported elsewhere without matching cadence, energy channel, and baseline~\cite{b11,b12}. The default Transformer baseline is not architecture-matched to STORM; a matched control ($d_{\mathrm{model}}=128$, two layers) shows that encoder width/depth and bagging account for much of the multi-horizon PE movement. The matched control copies STORM's $d_{\mathrm{model}}$, layer count,
+and head count only. It does not copy the feed-forward width:
+PyTorch's default $\mathrm{dim\_feedforward}=2048$ is used, versus
+$d_{\mathrm{ff}}=256$ in STORM. That is why the matched model has
+$\approx 1.19\times 10^{6}$ parameters and STORM $\approx 3.43\times 10^{5}$.
+Neither Transformer baseline uses STORM's residual-over-persistence
+heads. The 1\,h PE$_{\mathrm{pers}}$ gap is consistent with that skip,
+not only with the delay or gate.
 
 \textbf{Ensemble.} Ensemble skill uses a validation-selected \(\alpha^*\); the test-set \(\alpha\) curve and \(\alpha=0.3\) are diagnostic only. Online \(\alpha\) adaptation is not claimed.
 
@@ -378,7 +386,7 @@ reaches the strongest multi-horizon PE
 (PE$_{6\mathrm{h}}=0.910$, PE$_{12\mathrm{h}}=0.870$).
 An architecture-matched bagged Transformer remains competitive
 ($0.908$ / $0.861$) but does not dominate under this full retrain.
-Robustness checks and GRASP fine-tuning support operational motivation beyond a pure leaderboard PE number; for instance, the architecture-matched baseline remains near persistence at 1\,h (PE$_{\mathrm{pers}}\approx-0.01$), whereas STORM-Bz is clearly positive (PE$_{\mathrm{pers}}\approx+0.31$). Furthermore, as a noise probe, under synthetic Gaussian noise injection (\(\sigma=1.0\)), the 6\,h PE of the matched baseline drops to \(0.825 \pm 0.011\), highlighting the need for structurally robust architectures during degraded sensor conditions.
+Robustness checks and GRASP fine-tuning support operational motivation beyond a pure leaderboard PE number; for instance, the architecture-matched baseline remains near persistence at 1\,h (PE$_{\mathrm{pers}}\approx-0.01$), whereas STORM-Bz is clearly positive (PE$_{\mathrm{pers}}\approx+0.31$).
 
 
 
