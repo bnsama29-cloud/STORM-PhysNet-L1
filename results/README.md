@@ -1,4 +1,4 @@
-# Official conference tables
+ï»¿# Official conference tables
 
 These CSVs are the numbers used in the conference paper.
 
@@ -11,6 +11,6 @@ These CSVs are the numbers used in the conference paper.
 Do not treat Access-only probes (alternative gates, wider delay) as part of this repo.
 
 ### Noise & Matched-Capacity Checks
-- `tf_ffn256_summary.csv` — FFN-matched Transformer and residual-head control
-- `noise_robustness.csv` — Gaussian input-noise and channel-dropout probe
+- `tf_ffn256_summary.csv` ï¿½ FFN-matched Transformer and residual-head control
+- `noise_robustness.csv` ï¿½ Gaussian input-noise and channel-dropout probe
 
