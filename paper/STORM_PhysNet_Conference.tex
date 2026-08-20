@@ -178,7 +178,9 @@ Unless stated otherwise, tables use \(\mathrm{PE}_{\mathrm{clim}}\) with fifteen
 %% ====================================================================
 
 \subsection{Adaptive Propagation Delay}
-Solar-wind transit from L1 to the magnetopause is typically on the order of 0.5--1.5\,h~\cite{b14} depending on solar-wind speed. Rather than a fixed offset, STORM-PhysNet predicts a per-window delay \(\tau = f_\theta(X_{\mathrm{sw}})\) from a short conditioning network on the upstream solar-wind channels. The delay module is constrained to \([0.5, 1.5]\,\mathrm{h}\), a band chosen to cover the transit range while still allowing limited storm-time deviation without breaking causality. Differentiable linear interpolation then time-shifts the solar-wind features. We do not claim a unique recovered constant of 1.09\,h from every window.
+Solar-wind transit from L1 to the magnetopause is typically on the
+order of \(0.5\)--\(1.5\,\mathrm{h}\) in OMNI phase-front-corrected
+data~\cite{b14}. Rather than a fixed offset, STORM-PhysNet predicts a per-window delay \(\tau = f_\theta(X_{\mathrm{sw}})\) from a short conditioning network on the upstream solar-wind channels. The delay module is constrained to \([0.5, 1.5]\,\mathrm{h}\), a band chosen to cover the transit range while still allowing limited storm-time deviation without breaking causality. Differentiable linear interpolation then time-shifts the solar-wind features. We do not claim a unique recovered constant of 1.09\,h from every window.
 
 \subsection{\(B_z\)-Conditioned Physics Gate}
 Sustained southward IMF \(B_z\) triggers dayside reconnection and ring-current
