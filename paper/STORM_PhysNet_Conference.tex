@@ -156,7 +156,7 @@ geomagnetic channels
 moments, \(B_z\times V_{sw}\), Kp, Dst, and within-hour log-flux std)
 plus log-flux history (17 inputs total after concatenation). Forecast targets use integer hourly leads of 1\,h, 6\,h, and 12\,h on the hourly GOES series (config/dataloader: $[1,6,12]$). A 72\,h lookback is used at
 each forecast origin. Train/validation/test splits are chronological
-70/15/15\% with no shuffling. All models share the same preprocessor, chronological windows, and storm-biased sampler; test PE is computed once after training and is never used for model selection.
+70/15/15\% with no shuffling.\footnote{The official tables use the released chronological cut (63\,394 / 7\,924 / 15\,850 hours). The preprocessor default 70/15/15 cut is not the cut used for those numbers.} All models share the same preprocessor, chronological windows, and storm-biased sampler; test PE is computed once after training and is never used for model selection.
 
 \textbf{GRASP} (GSAT-19, Indian longitude \(\approx82^\circ\)E) provides
 $\approx$14--15 months of GEO radiation measurements from July 2017 to September 2018 in
@@ -366,14 +366,11 @@ PE improve substantially after adaptation.}
 \textbf{Resolution.} All reported leads are integer hours on hourly data; sub-hour (e.g.\ 45\,min) supervision would require higher-cadence flux labels.
 \textbf{Data scope.} Main GOES tables use fifteen seeds with bootstrap intervals; secondary diagnostics (individual case windows, residual histograms) are illustrative. GRASP covers a limited declining-phase window; performance during solar maximum is unknown.
 
-\textbf{Comparability.} PE values are not interchangeable with daily-fluence scores reported elsewhere without matching cadence, energy channel, and baseline~\cite{b11,b12}. The default Transformer baseline is not architecture-matched to STORM; a matched control ($d_{\mathrm{model}}=128$, two layers) shows that encoder width/depth and bagging account for much of the multi-horizon PE movement. The matched control copies STORM's $d_{\mathrm{model}}$, layer count,
-and head count only. It does not copy the feed-forward width:
-PyTorch's default $\mathrm{dim\_feedforward}=2048$ is used, versus
-$d_{\mathrm{ff}}=256$ in STORM. That is why the matched model has
-$\approx 1.19\times 10^{6}$ parameters and STORM $\approx 3.43\times 10^{5}$.
-Neither Transformer baseline uses STORM's residual-over-persistence
-heads. The 1\,h PE$_{\mathrm{pers}}$ gap is consistent with that skip,
-not only with the delay or gate.
+\textbf{Comparability.} PE values are not interchangeable with daily-fluence scores reported elsewhere without matching cadence, energy channel, and baseline~\cite{b11,b12}. The default Transformer baseline is not architecture-matched to STORM; a matched control ($d_{\mathrm{model}}=128$, two layers) shows that encoder width/depth and bagging account for much of the multi-horizon PE movement. The architecture-matched Transformer copies STORM's $d_{\mathrm{model}}$,
+layer count, and head count. It does not copy the feed-forward width
+($d_{\mathrm{ff}}=256$ in STORM versus PyTorch's default
+$\mathrm{dim\_feedforward}=2048$). Neither baseline uses STORM's
+residual-over-persistence heads.
 
 \textbf{Ensemble.} Ensemble skill uses a validation-selected \(\alpha^*\); the test-set \(\alpha\) curve and \(\alpha=0.3\) are diagnostic only. Online \(\alpha\) adaptation is not claimed.
 
@@ -394,7 +391,7 @@ Robustness checks and GRASP fine-tuning support operational motivation beyond a 
 The code, configuration files, trained checkpoints, evaluation scripts,
 result CSVs, paper figures, and the chronological split protocol are
 available at
-\url{https://github.com/bnsama29-cloud/STORM-PhysNet-L1}. Note that the GRASP fine-tuning run and robustness/interpretability diagnostics were executed externally, and their frozen outputs are provided in the repository.
+\url{https://github.com/bnsama29-cloud/STORM-PhysNet-L1}. Note that the GRASP fine-tuning run was executed externally, and its frozen outputs are provided in the repository.
 The GOES-15 EPEAD dataset is publicly available from NOAA NCEI
 (\url{https://www.ngdc.noaa.gov/stp/satellite/goes/}).
 OMNI is available via NASA OMNIWeb
