@@ -156,8 +156,7 @@ geomagnetic channels
 moments, \(B_z\times V_{sw}\), Kp, Dst, and within-hour log-flux std)
 plus log-flux history (17 inputs total after concatenation). Forecast targets use integer hourly leads of 1\,h, 6\,h, and 12\,h on the hourly GOES series (config/dataloader: $[1,6,12]$). A 72\,h lookback is used at
 each forecast origin. Train/validation/test splits are chronological
-70/15/15\% with no shuffling.\footnote{The official tables use the released chronological cut (63\,394 / 7\,924 / 15\,850 hours). The preprocessor default 70/15/15 cut is not the cut used for those numbers.} All models share the same preprocessor, chronological windows, and storm-biased sampler; test PE is computed once after training and is never used for model selection. All models use the same storm-weighted sampler
-(\(12\times\) oversampling of storm-flagged hours; see \texttt{config.yaml}).
+70/15/15\% with no shuffling.\footnote{The official tables use the released chronological cut (63\,394 / 7\,924 / 15\,850 hours). The preprocessor default 70/15/15 cut is not the cut used for those numbers.} All models share the same preprocessor, chronological windows, and storm-biased sampler; test PE is computed once after training and is never used for model selection.
 
 \textbf{GRASP} (GSAT-19, Indian longitude \(\approx82^\circ\)E) provides
 $\approx$14--15 months of GEO radiation measurements from July 2017 to September 2018 in
@@ -244,7 +243,7 @@ System & PE\(_{1\mathrm{h}}\) & PE\(_{6\mathrm{h}}\) & PE\(_{12\mathrm{h}}\) & P
 \midrule
 LSTM                         & \(0.955\) & \(0.881\) & \(0.840\) & \(0.788\) & \(-1.19\) \\
 Transformer                  & \(0.978\) & \(0.895\) & \(0.845\) & \(0.797\) & \(-0.08\) \\
-STORM-Bz                     & \(0.986\) & \(0.900\) & \(0.854\) & \(0.812\) & \(\mathbf{+0.31}\) \\
+STORM-Bz                     & \(0.986\) & \(0.900\) & \(0.854\) & \(0.812\) & \(+0.31\) \\
 STORM (No-Delay)             & \(0.987\) & \(0.902\) & \(0.855\) & \(0.809\) & \(+0.36\) \\
 STORM (No-Physics)           & \(0.986\) & \(0.899\) & \(0.850\) & \(0.807\) & \(+0.31\) \\
 STORM (No-Gate)              & \(0.986\) & \(0.900\) & \(0.856\) & \(0.819\) & \(+0.32\) \\
