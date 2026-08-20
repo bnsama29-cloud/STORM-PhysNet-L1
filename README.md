@@ -1,4 +1,4 @@
-﻿# STORM-PhysNet (conference)
+# STORM-PhysNet (conference)
 
 Official code for the **IEEE conference** paper:
 
