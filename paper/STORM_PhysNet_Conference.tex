@@ -13,7 +13,7 @@
 
 \author{
 \IEEEauthorblockN{Samarth BN}
-\IEEEauthorblockA{BE in Electronics and Communication\\
+\IEEEauthorblockA{Department of Electronics and Communication Engineering\\
 RV College of Engineering, Bengaluru, India\\
 Email: samarthbn.ec25@rvce.edu.in}
 }
@@ -156,7 +156,8 @@ geomagnetic channels
 moments, \(B_z\times V_{sw}\), Kp, Dst, and within-hour log-flux std)
 plus log-flux history (17 inputs total after concatenation). Forecast targets use integer hourly leads of 1\,h, 6\,h, and 12\,h on the hourly GOES series (config/dataloader: $[1,6,12]$). A 72\,h lookback is used at
 each forecast origin. Train/validation/test splits are chronological
-70/15/15\% with no shuffling.\footnote{The official tables use the released chronological cut (63\,394 / 7\,924 / 15\,850 hours). The preprocessor default 70/15/15 cut is not the cut used for those numbers.} All models share the same preprocessor, chronological windows, and storm-biased sampler; test PE is computed once after training and is never used for model selection.
+70/15/15\% with no shuffling.\footnote{The official tables use the released chronological cut (63\,394 / 7\,924 / 15\,850 hours). The preprocessor default 70/15/15 cut is not the cut used for those numbers.} All models share the same preprocessor, chronological windows, and storm-biased sampler; test PE is computed once after training and is never used for model selection. All models use the same storm-weighted sampler
+(\(12\times\) oversampling of storm-flagged hours; see \texttt{config.yaml}).
 
 \textbf{GRASP} (GSAT-19, Indian longitude \(\approx82^\circ\)E) provides
 $\approx$14--15 months of GEO radiation measurements from July 2017 to September 2018 in
@@ -243,7 +244,7 @@ System & PE\(_{1\mathrm{h}}\) & PE\(_{6\mathrm{h}}\) & PE\(_{12\mathrm{h}}\) & P
 \midrule
 LSTM                         & \(0.955\) & \(0.881\) & \(0.840\) & \(0.788\) & \(-1.19\) \\
 Transformer                  & \(0.978\) & \(0.895\) & \(0.845\) & \(0.797\) & \(-0.08\) \\
-STORM-Bz                     & \(\mathbf{0.986}\) & \(0.900\) & \(0.854\) & \(0.812\) & \(\mathbf{+0.31}\) \\
+STORM-Bz                     & \(0.986\) & \(0.900\) & \(0.854\) & \(0.812\) & \(\mathbf{+0.31}\) \\
 STORM (No-Delay)             & \(0.987\) & \(0.902\) & \(0.855\) & \(0.809\) & \(+0.36\) \\
 STORM (No-Physics)           & \(0.986\) & \(0.899\) & \(0.850\) & \(0.807\) & \(+0.31\) \\
 STORM (No-Gate)              & \(0.986\) & \(0.900\) & \(0.856\) & \(0.819\) & \(+0.32\) \\
@@ -292,11 +293,12 @@ confined to quiet, persistence-dominated intervals.
 The ablations together indicate that the short-horizon gain is produced by the training protocol itself---storm-biased sampling, the storm-weighted loss term, and residual heads with a skip from the last observed flux---rather than by any single runtime module. The delay and gate act as structured inductive biases during training; once the model is trained, removing either module at inference does not erase the 1\,h PE\(_{\mathrm{clim}}\) edge over the Transformer. We therefore present STORM-PhysNet primarily as a carefully engineered training and multi-horizon recipe that includes interpretable physics-inspired components, rather than as a demonstration that the delay or gate modules are individually necessary for the observed gains.
 
 \subsection{Input Noise and Missing Channels}
-\begin{figure}[t]
-\centerline{\includegraphics[width=\columnwidth]{figures/noise_robustness.png}}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=7.16in]{figures/noise_robustness.png}
 \caption{Prediction efficiency (1\,h and 6\,h) under synthetic Gaussian noise (\(\sigma\)) injected into standardized solar-wind inputs.}
 \label{fig:noise}
-\end{figure}
+\end{figure*}
 Under synthetic input noise (Fig.~\ref{fig:noise}), the architecture-matched Transformer's 6\,h PE drops to \(0.825\pm 0.010\) at \(\sigma=1.0\), while STORM maintains \(0.848\pm 0.008\). These noise-probe values are not a re-statement of Table~\ref{tab:main}; \(\sigma=0\) under the probe protocol is not the official seed-mean PE.
 
 \subsection{Interpretability}
@@ -306,18 +308,18 @@ gate design. Residual histograms on the test set widen under storm conditions fo
 models; STORM reduces the short-horizon bias relative to persistence but
 does not eliminate storm-time residual variance.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig_case_study_timeseries.png}
+\includegraphics[width=7.16in]{figures/fig_case_study_timeseries.png}
 \caption{Illustrative enhancement event case study. The STORM-Bz model captures the multi-day flux build-up and recovery better than the persistence baseline.}
 \label{fig:case_enhancement}
-\end{figure}
+\end{figure*}
 
 \subsection{GRASP Transfer}
 On GSAT-19 GRASP (fifteen seeds), zero-shot GOES models already achieve
 short-horizon PE near \(0.96\), but 6\,h and 12\,h PE fall to
-\(0.740\) and \(0.567\). Fine-tuning on GRASP (freezing the Transformer
-encoder and updating only the forecast heads) raises 6\,h PE from
+\(0.740\) and \(0.567\). Fine-tuning on GRASP (freezing the delay module, \(B_z\) gate, and Transformer encoder
+and updating only the forecast heads) raises 6\,h PE from
 \(0.740 \pm 0.020\) to \(0.841 \pm 0.017\)
 (paired \textit{t}-test across fifteen seeds,
 \(p = 3.55\times10^{-12}\), Cohen's \(d = 5.60\))
@@ -389,9 +391,7 @@ Robustness checks and GRASP fine-tuning support operational motivation beyond a 
 The code, configuration files, trained checkpoints, evaluation scripts,
 result CSVs, paper figures, and the chronological split protocol are
 available at
-\url{https://github.com/bnsama29-cloud/STORM-PhysNet-L1}. Note that the GRASP fine-tuning run was executed externally, and its frozen outputs are provided in the repository.\footnote{The official tables use the released chronological cut
-(63\,394 / 7\,924 / 15\,850 hours). The preprocessor default 70/15/15
-cut is not the cut used for those numbers.}
+\url{https://github.com/bnsama29-cloud/STORM-PhysNet-L1}. Note that the GRASP fine-tuning run was executed externally, and its frozen outputs are provided in the repository.
 The GOES-15 EPEAD dataset is publicly available from NOAA NCEI
 (\url{https://www.ngdc.noaa.gov/stp/satellite/goes/}).
 OMNI is available via NASA OMNIWeb
