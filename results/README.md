@@ -9,3 +9,8 @@ These CSVs are the numbers used in the conference paper.
 - `ensemble_summary.json` â€” validation-selected Î±* diagnostic
 
 Do not treat Access-only probes (alternative gates, wider delay) as part of this repo.
+
+### Noise & Matched-Capacity Checks
+- `tf_ffn256_summary.csv` — FFN-matched Transformer and residual-head control
+- `noise_robustness.csv` — Gaussian input-noise and channel-dropout probe
+

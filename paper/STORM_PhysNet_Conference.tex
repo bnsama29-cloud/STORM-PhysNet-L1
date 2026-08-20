@@ -368,7 +368,10 @@ PE improve substantially after adaptation.}
 layer count, and head count. It does not copy the feed-forward width
 ($d_{\mathrm{ff}}=256$ in STORM versus PyTorch's default
 $\mathrm{dim\_feedforward}=2048$). Neither baseline uses STORM's
-residual-over-persistence heads.
+residual-over-persistence heads. A follow-on FFN-matched control ($d_{\mathrm{ff}}=256$) remains below
+STORM at 1\,h (PE$_{1\mathrm{h}}=0.976$ versus $0.986$); adding a
+persistence residual closes that gap. Details are in the released
+evaluation CSVs.
 
 \textbf{Ensemble.} Ensemble skill uses a validation-selected \(\alpha^*\); the test-set \(\alpha\) curve and \(\alpha=0.3\) are diagnostic only. Online \(\alpha\) adaptation is not claimed.
 
@@ -389,7 +392,9 @@ Robustness checks and GRASP fine-tuning support operational motivation beyond a 
 The code, configuration files, trained checkpoints, evaluation scripts,
 result CSVs, paper figures, and the chronological split protocol are
 available at
-\url{https://github.com/bnsama29-cloud/STORM-PhysNet-L1}. Note that the GRASP fine-tuning run was executed externally, and its frozen outputs are provided in the repository.
+\url{https://github.com/bnsama29-cloud/STORM-PhysNet-L1}. Note that the GRASP fine-tuning run was executed externally, and its frozen outputs are provided in the repository.\footnote{The official tables use the released chronological cut
+(63\,394 / 7\,924 / 15\,850 hours). The preprocessor default 70/15/15
+cut is not the cut used for those numbers.}
 The GOES-15 EPEAD dataset is publicly available from NOAA NCEI
 (\url{https://www.ngdc.noaa.gov/stp/satellite/goes/}).
 OMNI is available via NASA OMNIWeb
