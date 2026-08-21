@@ -31,8 +31,10 @@ propagation delay, a \(B_z\)-conditioned physics gate, and residual
 heads for simultaneous 1-hour, 6-hour, and 12-hour log-flux
 forecasts.
 
-Relative to an architecture-matched Transformer control
-($d_{\mathrm{model}}=128$, two layers, four heads), STORM-Bz retains a small
+Relative to a width/depth/head-matched Transformer
+(\(d_{\mathrm{model}}=128\), two layers, four heads; not FFN-width
+matched and without STORM's persistence residual), hereafter the
+matched Transformer, STORM-Bz retains a small
 1\,h PE$_{\mathrm{clim}}$ edge (0.986 vs 0.980) and a large advantage versus
 persistence (PE$_{\mathrm{pers}} \approx 0.31$ vs $\approx -0.01$). At 6\,h and 12\,h, single-model
 means are close (STORM-Bz 0.900 / 0.854 vs matched 0.895 / 0.845).
@@ -154,8 +156,12 @@ geomagnetic channels
 \(B_z\)-south duration, storm-onset hours, rolling \(V_{sw}\) and \(B_z\)
 moments, \(B_z\times V_{sw}\), Kp, Dst, and within-hour log-flux std)
 plus log-flux history (17 inputs total after concatenation). Forecast targets use integer hourly leads of 1\,h, 6\,h, and 12\,h on the hourly GOES series (config/dataloader: $[1,6,12]$). A 72\,h lookback is used at
-each forecast origin. Train/validation/test splits are chronological
-70/15/15\% with no shuffling.\footnote{The official tables use the released chronological cut (63\,394 / 7\,924 / 15\,850 hours). The preprocessor default 70/15/15 cut is not the cut used for those numbers.} All models share the same preprocessor, chronological windows, and storm-biased sampler; test PE is computed once after training and is never used for model selection.
+each forecast origin. All derived channels and indices in the 72\,h window are values
+already available at the forecast origin; no future $K_p$ or
+$D_{\mathrm{st}}$ is used as an input. The released tables use a fixed chronological cut of
+\(63\,394\) / \(7\,924\) / \(15\,850\) hours (no shuffling).
+The preprocessor's generic 70/15/15 helper is not that cut.
+Test PE is computed once and never used for selection.
 
 \textbf{GRASP} (GSAT-19, Indian longitude \(\approx82^\circ\)E) provides
 $\approx$14--15 months of GEO radiation measurements from July 2017 to September 2018 in
@@ -205,7 +211,9 @@ bagging. The default baseline is not architecture-matched; single-model PE diffe
 should be interpreted with this disparity in mind.
 
 \subsection{Physics Regularization and Training}
-Training minimises a composite objective: a primary multi-horizon residual loss (beta-NLL with a \(2.5\times\) under-prediction penalty during storm periods), plus auxiliary Dst/Kp and storm-onset terms and small regularisers (monotonicity, temporal smoothness, delay, variance calibration, and an Akasofu-\(\varepsilon\) coupling consistency term). Horizon weights emphasise the short horizon. Coefficient values follow the released configuration. We did not ablate every auxiliary term individually; reported PE reflects the full composite objective used in training. All primary models use AdamW, cosine decay, early stopping on the 12\,h validation MSE, and seeds \(\{42,\ldots,56\}\).
+Training minimises a composite objective: a primary multi-horizon residual loss (beta-NLL with a \(2.5\times\) under-prediction penalty during storm periods), plus auxiliary Dst/Kp and storm-onset terms and small regularisers (monotonicity, temporal smoothness, delay, variance calibration, and an Akasofu-\(\varepsilon\) coupling consistency term). Because $B_y$ is absent, the Akasofu-$\varepsilon$ term approximates
+the clock angle from $B_z$ and $B_t$ and is a relative regularizer,
+not a calibrated coupling estimate. Horizon weights emphasise the short horizon. Coefficient values follow the released configuration. We did not ablate every auxiliary term individually; reported PE reflects the full composite objective used in training. All primary models use AdamW, cosine decay, early stopping on the 12\,h validation MSE, and seeds \(\{42,\ldots,56\}\).
 
 \subsection{Baselines}
 The primary control is an architecture-matched Transformer
@@ -231,11 +239,15 @@ and a large PE$_{\mathrm{pers}}$ advantage ($+0.31$ vs $-0.01$).
 A default-width Transformer scores $0.978$ at 1\,h and is secondary.
 Seed-bagged STORM reaches PE$_{6\mathrm{h}}=0.910$ and PE$_{12\mathrm{h}}=0.870$.
 Validation selects a mixing weight \(\alpha^*\) per seed (typically 0.4--0.6). We also report a fixed \(\alpha=0.3\) diagnostic. Under selected \(\alpha^*\), linear-ensemble test PE\(_{6\mathrm{h}} \approx 0.906\). We do not claim online \(\alpha\) adaptation.
-Bagging fifteen STORM seeds (\(0.910\) at 6\,h) is stronger than the hybrid ensemble and provides a similar multi-horizon profile without requiring the Transformer at inference. We recommend bagging operationally due to this computational simplicity and superior performance.
+Bagging fifteen STORM seeds (\(0.910\) at 6\,h) is stronger than the hybrid ensemble and provides a similar multi-horizon profile without requiring the Transformer at inference. We recommend seed-bagging for deployment because it needs only one
+architecture at inference and matches or exceeds the hybrid
+$\alpha^\ast$ ensemble.
 
 \begin{table}[!htbp]
 \centering
-\caption{GOES test PE (fifteen seeds). Bold: best in column.}
+\caption{GOES test PE (fifteen seeds). Bold: highest value among the rows
+shown in that column. PE is $\mathrm{PE}_{\mathrm{clim}}$ except
+the last column.}
 \label{tab:main}
 \setlength{\tabcolsep}{3.2pt}
 \begin{tabular}{lccccc}
@@ -243,14 +255,14 @@ Bagging fifteen STORM seeds (\(0.910\) at 6\,h) is stronger than the hybrid ense
 System & PE\(_{1\mathrm{h}}\) & PE\(_{6\mathrm{h}}\) & PE\(_{12\mathrm{h}}\) & PE\(_{\mathrm{st},6\mathrm{h}}\) & PE\(_{\mathrm{pers},1\mathrm{h}}\) \\
 \midrule
 LSTM                         & \(0.955\) & \(0.881\) & \(0.840\) & \(0.788\) & \(-1.19\) \\
-Transformer                  & \(0.978\) & \(0.895\) & \(0.845\) & \(0.797\) & \(-0.08\) \\
+Transformer (default)        & \(0.978\) & \(0.895\) & \(0.845\) & \(0.797\) & \(-0.08\) \\
 STORM-Bz                     & \(0.986\) & \(0.900\) & \(0.854\) & \(0.812\) & \(+0.31\) \\
-STORM (No-Delay)             & \(0.987\) & \(0.902\) & \(0.855\) & \(0.809\) & \(+0.36\) \\
+STORM (No-Delay)             & \(\mathbf{0.987}\) & \(0.902\) & \(0.855\) & \(0.809\) & \(\mathbf{+0.36}\) \\
 STORM (No-Physics)           & \(0.986\) & \(0.899\) & \(0.850\) & \(0.807\) & \(+0.31\) \\
 STORM (No-Gate)              & \(0.986\) & \(0.900\) & \(0.856\) & \(0.819\) & \(+0.32\) \\
 Transformer matched          & \(0.980\) & \(0.895\) & \(0.845\) & \(0.809\) & \(-0.01\) \\
 \midrule
-STORM-Bz bagged              & \(\mathbf{0.987}\) & \(\mathbf{0.910}\) & \(\mathbf{0.870}\) & \(0.836\) & --- \\
+STORM-Bz bagged              & \(\mathbf{0.987}\) & \(\mathbf{0.910}\) & \(\mathbf{0.870}\) & \(\mathbf{0.836}\) & --- \\
 TF matched bagged            & \(0.984\) & \(0.908\) & \(0.861\) & \(0.831\) & --- \\
 TF default bagged           & \(0.984\) & \(0.907\) & \(0.861\) & \(0.816\) & --- \\
 \bottomrule
@@ -290,7 +302,8 @@ sample) shows PE\(_{6\mathrm{h}}\) remaining above 0.70 even in the
 strong-storm bin (\(\mathrm{Dst}\le-100\,\mathrm{nT}\)). Skill is not
 confined to quiet, persistence-dominated intervals.
 
-The ablations together indicate that the short-horizon gain is produced by the training protocol itself---storm-biased sampling, the storm-weighted loss term, and residual heads with a skip from the last observed flux---rather than by any single runtime module. The delay and gate act as structured inductive biases during training; once the model is trained, removing either module at inference does not erase the 1\,h PE\(_{\mathrm{clim}}\) edge over the Transformer. We therefore present STORM-PhysNet primarily as a carefully engineered training and multi-horizon recipe that includes interpretable physics-inspired components, rather than as a demonstration that the delay or gate modules are individually necessary for the observed gains.
+The ablations together indicate that the short-horizon gain is produced by the training protocol itself---storm-biased sampling, the storm-weighted loss term, and residual heads with a skip from the last observed flux---rather than by any single runtime module. The delay and gate act as structured inductive biases during training; once the model is trained, removing either module at inference does not erase the 1\,h PE\(_{\mathrm{clim}}\) edge over the Transformer. We therefore present STORM-PhysNet primarily as a carefully engineered training and multi-horizon recipe that includes interpretable physics-inspired components, rather than as a demonstration that the delay or gate modules are individually necessary for the observed gains. The FFN-matched control in Limitations shows that adding a persistence
+residual, not the delay or gate, is what closes the 1\,h gap to STORM.
 
 \subsection{Input Noise and Missing Channels}
 \begin{figure*}[t]
@@ -324,7 +337,9 @@ and updating only the forecast heads) raises 6\,h PE from
 (paired \textit{t}-test across fifteen seeds,
 \(p = 3.55\times10^{-12}\), Cohen's \(d = 5.60\))
 and 12\,h PE from \(0.567 \pm 0.033\) to \(0.762 \pm 0.020\)
-(\(p = 1.66\times10^{-13}\), \(d = 7.00\)). Absolute GRASP PE remains below
+(\(p = 1.66\times10^{-13}\), \(d = 7.00\)). These tests measure seed-to-seed consistency on one GRASP interval,
+not independent solar-cycle trials; all fifteen seeds improve after
+fine-tuning. Absolute GRASP PE remains below
 the GOES test scores, as expected under sensor and longitude shift; the
 practical point is the large mid- and long-horizon recovery after
 adaptation rather than a claim of parity with GOES. A similar adaptation profile is observed for the architecture-matched Transformer baseline, which improves its 6\,h PE from \(0.797 \pm 0.014\) (zero-shot) to \(0.878 \pm 0.006\) after fine-tuning.
@@ -378,11 +393,12 @@ evaluation CSVs.
 
 Relative to the architecture-matched Transformer, the clearest single-model gain is short-horizon
 reliability (PE$_{1\mathrm{h}}$ and PE$_{\mathrm{pers}}$).
-Among systems evaluated here, seed-bagged STORM-Bz
-reaches the strongest multi-horizon PE
-(PE$_{6\mathrm{h}}=0.910$, PE$_{12\mathrm{h}}=0.870$).
-An architecture-matched bagged Transformer remains competitive
-($0.908$ / $0.861$) but does not dominate under this full retrain.
+Among the bagged rows in Table~\ref{tab:main}, STORM-Bz reaches
+$\mathrm{PE}_{6\mathrm{h}}=0.910$ and $\mathrm{PE}_{12\mathrm{h}}=0.870$.
+No-Delay and No-Gate bagged scores in the released CSV differ by
+less than $0.002$; we do not treat STORM-Bz as uniquely best under
+bagging. Seed-bagging is still the practical choice: one architecture
+at inference and no validation-time $\alpha^\ast$.
 Robustness checks and GRASP fine-tuning support operational motivation beyond a pure leaderboard PE number; for instance, the architecture-matched baseline remains near persistence at 1\,h (PE$_{\mathrm{pers}}\approx-0.01$), whereas STORM-Bz is clearly positive (PE$_{\mathrm{pers}}\approx+0.31$).
 
 
