@@ -92,7 +92,7 @@ transfer strategies for Indian-longitude GEO assets such as GSAT-19.
 
 The design augments a standard Transformer with constrained delay and
 gating modules, trained end-to-end under matched chronological splits
-and fifteen seeds. Primary comparisons use an architecture-matched
+and fifteen seeds. Primary comparisons use the matched
 Transformer; a default-width Transformer and LSTM are reported as
 references. Ablations in Section~\ref{sec:results} show that no single
 module fully accounts for the short-horizon PE$_{\mathrm{clim}}$ edge.
@@ -156,9 +156,13 @@ geomagnetic channels
 \(B_z\)-south duration, storm-onset hours, rolling \(V_{sw}\) and \(B_z\)
 moments, \(B_z\times V_{sw}\), Kp, Dst, and within-hour log-flux std)
 plus log-flux history (17 inputs total after concatenation). Forecast targets use integer hourly leads of 1\,h, 6\,h, and 12\,h on the hourly GOES series (config/dataloader: $[1,6,12]$). A 72\,h lookback is used at
-each forecast origin. All derived channels and indices in the 72\,h window are values
+each forecast origin.
+
+All derived channels and indices in the 72\,h window are values
 already available at the forecast origin; no future $K_p$ or
-$D_{\mathrm{st}}$ is used as an input. The released tables use a fixed chronological cut of
+$D_{\mathrm{st}}$ is used as an input.
+
+The released tables use a fixed chronological cut of
 \(63\,394\) / \(7\,924\) / \(15\,850\) hours (no shuffling).
 The preprocessor's generic 70/15/15 helper is not that cut.
 Test PE is computed once and never used for selection.
