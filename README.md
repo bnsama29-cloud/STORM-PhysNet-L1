@@ -90,6 +90,9 @@ GRASP fine-tune weights were produced externally; frozen PE is in `results/table
 
 ## Key results (fifteen seeds)
 
+Table I bagging is the mean of 15 independently trained checkpoints
+(seeds 42–56), not the unused 5-member STORMPhysNetEnsemble.
+
 | System | PE_1h | PE_6h | PE_12h | PE_st,6h | PE_pers,1h |
 |--------|-------|-------|--------|----------|------------|
 | LSTM | 0.955 | 0.881 | 0.840 | 0.788 | −1.19 |

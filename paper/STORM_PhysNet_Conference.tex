@@ -167,6 +167,10 @@ The released tables use a fixed chronological cut of
 The preprocessor's generic 70/15/15 helper is not that cut.
 Test PE is computed once and never used for selection.
 
+Training uses a 12$\times$ WeightedRandomSampler on storm-flagged
+windows only. Validation and test keep the natural chronological
+mix; Table~I is scored on that natural test distribution.
+
 \textbf{GRASP} (GSAT-19, Indian longitude \(\approx82^\circ\)E) provides
 $\approx$14--15 months of GEO radiation measurements from July 2017 to September 2018 in
 the declining phase of Solar Cycle 24. After alignment, GRASP supplies fewer
@@ -198,7 +202,11 @@ southward-\(B_z\) statistics through an MLP and a clamped sigmoid to a
 per-channel modulation vector \(\mathbf{g}\in[g_{\min},1]^{d_{\mathrm{model}}}\), which is multiplied element-wise with the encoder representation
 before the forecast heads. Gate activations differ between storm and quiet windows
 (Mann--Whitney \(p = 1.2\times10^{-14}\), see Section~\ref{sec:results}); the absolute range
-is narrow.
+is narrow. The gate sees standardized $B_z$ and
+duration channels (the sign of $B_z$ is preserved); it does not
+operate on raw nT or hour units. A $-5$\,nT threshold appears in
+the code as metadata only; southward intensity is
+$\mathrm{clamp}(-B_z,0)$ on the standardized series.
 
 \subsection{Transformer Backbone and Multi-Horizon Heads}
 We use a standard Transformer encoder~\cite{b16}: each of the \(T=72\)
@@ -215,7 +223,8 @@ bagging. The default baseline is not architecture-matched; single-model PE diffe
 should be interpreted with this disparity in mind.
 
 \subsection{Physics Regularization and Training}
-Training minimises a composite objective: a primary multi-horizon residual loss (beta-NLL with a \(2.5\times\) under-prediction penalty during storm periods), plus auxiliary Dst/Kp and storm-onset terms and small regularisers (monotonicity, temporal smoothness, delay, variance calibration, and an Akasofu-\(\varepsilon\) coupling consistency term). Because $B_y$ is absent, the Akasofu-$\varepsilon$ term approximates
+Training minimises a composite objective: a primary multi-horizon residual loss (beta-NLL with a \(2.5\times\) under-prediction penalty during storm periods), plus auxiliary Dst/Kp and storm-onset terms and small regularisers (the monotonicity term is a heuristic $V_{\mathrm{sw}}^2\max(0,-B_z)$
+rate regularizer, not a calibrated physical bound; temporal smoothness, delay, variance calibration, and an Akasofu-\(\varepsilon\) coupling consistency term). Because $B_y$ is absent, the Akasofu-$\varepsilon$ term approximates
 the clock angle from $B_z$ and $B_t$ and is a relative regularizer,
 not a calibrated coupling estimate. Horizon weights emphasise the short horizon. Coefficient values follow the released configuration. We did not ablate every auxiliary term individually; reported PE reflects the full composite objective used in training. All primary models use AdamW, cosine decay, early stopping on the 12\,h validation MSE, and seeds \(\{42,\ldots,56\}\).
 
@@ -287,9 +296,13 @@ while the ensemble improves multi-horizon PE (see Table~\ref{tab:main}).}
 \end{figure}
 
 \subsection{Ablation Analysis}
-In all STORM variants, physics-loss terms are restricted to the
-short-horizon head by default, as early testing showed that enforcing
-these constraints on the 6\,h and 12\,h heads did not improve long-horizon PE.
+The monotonicity and coupling residuals are multiplied by
+\texttt{physics\_horizon\_scale}$=[1,0,0]$, so those terms affect
+only the 1\,h head. Auxiliary $D_{\mathrm{st}}$/$K_p$/storm losses
+and the variance-calibration term still use all three heads. The
+$B_z$-response term is computed on all horizons and then multiplied
+by the 1\,h scale. Early tests that applied the residual physics
+terms to the 6\,h and 12\,h heads did not improve long-horizon PE.
 
 A No-Gate run (identity modulation) retains 1\,h PE near \(0.986\), so the short-horizon PE\(_{\mathrm{clim}}\) advantage over
 the Transformer is not removed by turning the gate off alone.
@@ -381,6 +394,13 @@ PE improve substantially after adaptation.}
 
 \textbf{Resolution.} All reported leads are integer hours on hourly data; sub-hour (e.g.\ 45\,min) supervision would require higher-cadence flux labels.
 \textbf{Data scope.} Main GOES tables use fifteen seeds with bootstrap intervals; secondary diagnostics (individual case windows, residual histograms) are illustrative. GRASP covers a limited declining-phase window; performance during solar maximum is unknown.
+
+\textbf{Imputation.} A final back/forward fill runs on the
+concatenated hourly series before the chronological cut, so a
+handful of gap fills at the train/val and val/test boundaries can
+use the next valid sample across the cut. Scalers are fit on
+training hours only. We treat this as a residual preprocessing
+limitation, not as test-label leakage.
 
 \textbf{Comparability.} PE values are not interchangeable with daily-fluence scores reported elsewhere without matching cadence, energy channel, and baseline~\cite{b11,b12}. The default Transformer baseline is not architecture-matched to STORM; a matched control ($d_{\mathrm{model}}=128$, two layers) shows that encoder width/depth and bagging account for much of the multi-horizon PE movement. The architecture-matched Transformer copies STORM's $d_{\mathrm{model}}$,
 layer count, and head count. It does not copy the feed-forward width
