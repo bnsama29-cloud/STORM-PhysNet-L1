@@ -98,15 +98,15 @@ short calibrated record, so operators need a practical path from a data-rich
 satellite to a data-scarce one without retraining everything from scratch.
 
 Forecast models have progressed from linear filters~\cite{b3,b4}
-through LSTM-based deep-learning approaches~\cite{b5,b6,b7}
+through LSTM- and MLP-based deep-learning approaches~\cite{b5,b6,b7}
 to recent Transformer-based architectures reporting daily-fluence PE of
 0.85--0.92~\cite{b8,b9,b10}. We do not include REFM as a numeric baseline because it targets daily integral
 fluence rather than hourly log-flux; a direct PE comparison would be
 misleading~\cite{b4}. Despite these advances,
 two gaps remain: (i) the short-horizon (\(\sim\)1\,h) behavior of
 Transformer architectures relative to physics-inspired variants is poorly
-characterized across seeds, and (ii) no systematic study has assessed
-transfer strategies for Indian-longitude GEO assets such as GSAT-19.
+characterized across seeds, and (ii) we are not aware of a published 15-seed
+GOES\(\rightarrow\)GRASP hourly recipe for assets such as GSAT-19.
 
 The design augments a standard Transformer with constrained delay and
 gating modules, trained end-to-end under matched chronological splits
@@ -182,7 +182,8 @@ each forecast origin. Train/validation/test splits are chronological
 $\approx$14--15 months of GEO radiation measurements from July 2017 to September 2018 in
 the declining phase of Solar Cycle 24. After alignment, GRASP supplies fewer
 co-located input channels than the GOES pipeline; this mismatch is a main
-reason zero-shot transfer fails and motivates input-projection adaptation.
+reason zero-shot transfer fails and motivates
+zero-padding, freezing the encoder, and fine-tuning the heads.
 Storm windows on GRASP are defined by Dst \(\le -50\,\mathrm{nT}\)
 (118/1781 test hours, 6.6\%).
 
@@ -198,7 +199,8 @@ Unless stated otherwise, tables use \(\mathrm{PE}_{\mathrm{clim}}\) with fifteen
 %% ====================================================================
 
 \subsection{Adaptive Propagation Delay}
-Solar-wind transit from L1 to the magnetopause is typically on the order of 0.5--1.5\,h~\cite{b14} depending on solar-wind speed. Rather than a fixed offset, STORM-PhysNet predicts a per-window delay \(\tau = f_\theta(X_{\mathrm{sw}})\) from a short conditioning network on the upstream solar-wind channels. The delay module is constrained to \([0.5, 1.5]\,\mathrm{h}\), a band chosen to cover the transit range while still allowing limited storm-time deviation without breaking causality. Differentiable linear interpolation then time-shifts the solar-wind features. We do not claim a unique recovered constant of 1.09\,h from every window.
+Solar-wind transit from L1 to the magnetopause is typically on the order of 0.5--1.5\,h~\cite{b3,b4} depending on solar-wind speed. Rather than a fixed offset,
+STORM-PhysNet predicts a per-window delay \(\tau = f_\theta(X_{\mathrm{sw}})\) from a short conditioning network on the upstream solar-wind channels. The delay module is constrained to \([0.5, 1.5]\,\mathrm{h}\), a band chosen to cover the transit range while still allowing limited storm-time deviation without breaking causality. Differentiable linear interpolation then time-shifts the solar-wind features. We do not claim a unique recovered constant of 1.09\,h from every window.
 
 \subsection{\(B_z\)-Conditioned Physics Gate}
 Sustained southward IMF \(B_z\) triggers dayside reconnection and ring-current
@@ -284,7 +286,7 @@ Bagged rows average the fifteen predictions before scoring. PE is \(\mathrm{PE}_
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_horizon_pe.png}
 \caption{Per-horizon PE against climatology (mean\(\pm\)std, fifteen seeds).
-STORM-Bz leads at 1\,h; at 6\,h and 12\,h the single models are close,
+STORM variants lead at 1\,h; No-Delay is highest. At 6\,h and 12\,h the single models are close,
 while the ensemble improves multi-horizon PE (see Table~\ref{tab:main}).}
 \label{fig:horizon}
 \end{figure}
@@ -450,10 +452,10 @@ geostationary orbit using the EMD-LSTM network,''
 \bibitem{b8}
 X.~Sun et al., ``Enhancing \(\ge2\) MeV electron fluence predictions in GEO
 through three deep learning strategies,'' \emph{Space Weather}, vol.~23,
-e2024SW003975, 2025.
+e2025SW004519, 2025.
 \bibitem{b9}
 W.~Tan et al., ``Comparative analysis of TPA-LSTM and Transformer models
-for forecasting GEO radiation belt electron fluxes,'' \emph{Space Weather}, vol.~22, e2023SW003714, 2024.
+for forecasting GEO radiation belt electron fluxes,'' \emph{Space Weather}, vol.~22, e2024SW004119, 2024.
 \bibitem{b10}
 X.~Sun et al., ``A modeling study of \(\ge2\) MeV electron fluxes in GEO at
 different prediction time scales based on LSTM and transformer networks,'' \emph{J. Space Weather Space Clim.},
@@ -463,12 +465,11 @@ E.~Camporeale, ``The challenge of machine learning in space weather,''
 \emph{Space Weather}, vol.~17, pp.~1166--1207, 2019.
 \bibitem{b12}
 S.~K. Morley et al., ``Evaluating the performance of radiation belt models,''
-\emph{Space Weather}, vol.~16, pp.~1521--1548, 2018.
+\emph{Space Weather}, vol.~16, pp.~1521--1548, 2018, doi:10.1029/2018SW002042.
 \bibitem{b13}
-A.~G. Ling et al., ``Identifying solar wind drivers of radiation belt
-responses,'' \emph{Space Weather}, vol.~8, no.~10, 2010.
+A.~G. Ling et al., ``A neural network-based geosynchronous relativistic electron flux forecasting model,'' \emph{Space Weather}, vol.~8, S09003, 2010.
 \bibitem{b14}
-N.~Y.~Ganushkina et al., ``Forecasting GOES 15 \(>2\) MeV electron fluxes,''
+C.~Forsyth et al., ``Forecasting GOES 15 \(>2\) MeV electron fluxes,''
 \emph{Space Weather}, vol.~18, e2019SW002416, 2020.
 \bibitem{b15}
 S.~Sinha et al., ``PreMevE update,'' \emph{Space Weather}, vol.~19,
