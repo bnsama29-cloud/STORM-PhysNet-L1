@@ -1,3 +1,5 @@
+Manuscript PDF is not stored in this repository; code and tables here match the submitted paper.
+
 ﻿# STORM-PhysNet (conference)
 
 Official code for the **IEEE conference** paper:
