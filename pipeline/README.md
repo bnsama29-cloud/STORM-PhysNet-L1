@@ -1,6 +1,6 @@
 # Pipeline: training, transfer and reporting
 
-This folder trains every model, runs the GRASP transfer experiment, and builds every table, figure and number in `results/` and `paper/` from the saved predictions.
+This folder trains every model, runs the GRASP transfer experiment, and builds every table, figure and number in `results/` from the saved predictions.
 
 ## Files
 
