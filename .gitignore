@@ -36,5 +36,5 @@ Thumbs.db
 kaggle_outputs/
 ieee_paper/
 
-# re-run predictions are part of the record
-!rerun_2026_10/predictions/*.zip
+# prediction archives are tracked
+!predictions/*.zip

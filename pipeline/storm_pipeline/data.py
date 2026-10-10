@@ -1,17 +1,14 @@
 """
-Fixed data pipeline for the STORM-PhysNet re-run.
+STORM-PhysNet data pipeline (causal, leakage-free).
 
-What is different from the repo's src/data/preprocessor.py (and why):
-  1. No back-fill / no centred filters.  Missing GOES hours (NOAA quality flag or flux<=0) are NOT interpolated
-     or filled from later data.  Model INPUT channels are forward-filled (past values only) and an explicit
-     `flux_obs` mask channel tells the model which hours are real.
+  1. Missing GOES hours (NOAA quality flag or flux<=0) are never interpolated or filled from later data.  Model INPUT
+     channels are forward-filled (past values only) and an explicit `flux_obs` mask channel marks the real hours.
   2. Targets are the raw observed hourly log10 flux.  A window is used (train/val/test) only if the last lookback
      hour and all three target hours (t+1, t+6, t+12) are real observations.
-  3. No Hampel despiking (it was a centred, non-causal window); only physical-bound clipping.
+  3. No despiking; only physical-bound clipping.
   4. OMNI Kp is stored x10 (0..90).  It is divided by 10 and made causal: each hour only sees the last Kp 3-h
-     interval that has already finished (OMNI repeats the interval's final value on all 3 hours, which would leak
-     up to 2 h of future).
-  5. storm_onset_hours is computed on the corrected Kp and capped at 720 h (the old 9999 sentinel dominated the scaler).
+     interval that has already finished (OMNI repeats the interval's final value on all 3 hours).
+  5. storm_onset_hours is computed on the causal Kp and capped at 720 h.
   6. Splits are labelled per row (train / val / test) and a window is kept only if all its 84 rows (72 lookback +
      12 lead) carry the same label, so no window straddles a boundary (automatic 84 h buffers).
   7. Scalers are fit on the training rows of each block only.
@@ -31,9 +28,9 @@ SW_COLS = ["vsw", "bz", "bt", "density", "pdyn", "bz_south_duration", "storm_ons
 SCALED = [c for c in SW_COLS if c != "flux_obs"]
 KEEP_FOR_FLUX_ONLY = [SW_COLS.index("log_flux_std_1h"), SW_COLS.index("flux_obs")]
 
-VAL = ("2017-03-11 09:00", "2018-09-07 03:00")       # identical to the old 70/15/15 validation block
+VAL = ("2017-03-11 09:00", "2018-09-07 03:00")       # shared validation period
 BLOCKS = {
-    "A": ("2018-09-07 04:00", "2020-03-04 23:00"),    # old test block (declining phase -> minimum)
+    "A": ("2018-09-07 04:00", "2020-03-04 23:00"),    # declining phase -> solar minimum
     "B": ("2015-01-01 00:00", "2016-12-31 23:00"),    # incl. Mar-2015 and Jun-2015 storms
     "C": ("2012-01-01 00:00", "2013-12-31 23:00"),    # incl. Mar-2012 and Mar-2013 storms
 }

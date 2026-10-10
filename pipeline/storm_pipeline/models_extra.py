@@ -1,4 +1,4 @@
-"""Extra models needed for the re-run (the repo only ships their checkpoints, not their code)."""
+"""Control models: residual-head Transformer and flux-only wrapper."""
 import math, torch, torch.nn as nn
 from .data import KEEP_FOR_FLUX_ONLY
 

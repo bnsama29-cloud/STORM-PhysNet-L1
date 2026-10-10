@@ -1,30 +1,20 @@
 # STORM-PhysNet — Literature Collection (compiled 10 Oct 2026)
 
-Use this file when rewriting the Related Work and References of the AGERS paper / IEEE Access version.
+Annotated literature for the STORM-PhysNet paper and its extended version.
 Legend: V = verified (publisher/Crossref/Semantic Scholar), PV = partly verified, FLAG = check before citing.
 
-## 1. Corrections to the current paper's references
-- Perry et al. 2010 is **S12002** (not S12003). doi:10.1029/2010SW000581
-- Sun et al. "different prediction time scales ... LSTM and transformer" is **J. Space Weather Space Clim. 14, 25 (2024)**, doi:10.1051/swsc/2024021 (not Space Weather).
-- Son et al. 2022 has three authors: J. Son, Y.-J. Moon, S. Shin. e2022SW003153.
-- Baker et al. 2018 DOI: 10.1007/s11214-017-0452-7.
-- Morley 2018 Space Weather 16 = Morley, Brito & Welling, "Measures of model performance based on the log accuracy ratio," 16(1):69–88, doi:10.1002/2017SW001669. (Check whether the paper cited it as "Evaluating the performance of radiation belt models" — that title is wrong.)
-- Tan et al. 2024 authors: M. Tan, X. Si, S. Teng, X. Wu, X. Tao (paper had "W. Tan").
-- Sun et al. 2025 ("three deep learning strategies"): Space Weather 23(8) e2025SW004519.
-- Zhang et al. 2022 EMD-LSTM: Space Weather 20(10) e2022SW003126.
-
-## 2. Novelty / overlap notes (must address in Related Work)
+## 1. Positioning against closest prior work
 - **Closest prior art:** Sun et al. 2024 (JSWSC 14:25) — Transformer vs LSTM for ≥2 MeV GEO flux at 1, 3, 6, 12, 24 h; PE 0.940/0.886/0.828/0.747/0.660 (GOES-10, test 2005). Persistence for 1-h fluence 0.955 vs Transformer 0.961. Gap-filled by interpolation; inputs chosen on test year.
 - Sun et al. 2025 — pre-training + few-shot, GOES-15 daily fluence PE 0.885→0.925 (transfer-like, single satellite).
 - Zhao et al. 2025 (Space Weather 23:e2025SW004419) — cross-calibrated FY-4A + GOES-15, merged training beats GOES-15-only (calibration + merging, not fine-tuning).
 - Tan et al. 2024 — Transformer vs TPA-LSTM difference **not statistically significant** (>0.8 MeV).
 - Kieokaew et al. 2026 (arXiv:2605.15752) — Transformer encoder + TimesFM at 6 h; GOES-15→17 linear rescaling.
 - Zeng et al. 2023 — linear models can beat Transformers → need simple baselines.
-- Gaps we can own: residual-over-persistence heads; skill vs persistence reported per horizon; β-NLL + asymmetric storm loss; 10–15-seed paired tests; leakage audit; blocked test periods; GOES-15→GRASP (no peer-reviewed GRASP paper found).
-- Caveat: OMNI is already time-shifted to the bow shock (King & Papitashvili 2005), so the learnable τ models a residual delay, not L1 transit. Say so.
-- TFT (Lim 2021) already uses gating — present the gate as Bz-conditioned, not as a new gating idea.
+- Gaps we can own: residual-over-persistence heads; skill vs persistence reported per horizon; β-NLL + asymmetric storm loss; multi-seed paired tests; leakage-free evaluation; blocked test periods; GOES-15→GRASP (no peer-reviewed GRASP paper found).
+- Caveat: OMNI is already time-shifted to the bow shock (King & Papitashvili 2005), so the learnable τ models a residual delay, not L1 transit.
+- TFT (Lim 2021) already uses gating; the STORM gate is distinguished by its Bz conditioning.
 
-## 3. Best reported numbers (not directly comparable — different satellites/years/cadence)
+## 2. Best reported numbers (not directly comparable — different satellites/years/cadence)
 | Horizon | Best | Source |
 |---|---|---|
 | 1 h | PE 0.97, RMSE 0.18 | Son 2022 (MLP) |
@@ -36,7 +26,7 @@ Legend: V = verified (publisher/Crossref/Semantic Scholar), PV = partly verified
 | 24 h daily | PE 0.77 operational / 0.819 past-cast | SNB3GEO, Balikhin 2016 |
 | 72 h | PE 0.53 | Son 2022 |
 
-## 4. IEEE reference list (core, verified)
+## 3. IEEE reference list (core, verified)
 [1] D. N. Baker, P. J. Erickson, J. F. Fennell, J. C. Foster, A. N. Jaynes, and P. T. Verronen, "Space weather effects in the Earth's radiation belts," Space Sci. Rev., vol. 214, no. 1, Art. no. 17, 2018, doi: 10.1007/s11214-017-0452-7.
 [2] R. B. Horne et al., "Wave acceleration of electrons in the Van Allen radiation belts," Nature, vol. 437, pp. 227–230, 2005, doi: 10.1038/nature04033.
 [3] D. N. Baker, R. L. McPherron, T. E. Cayton, and R. W. Klebesadel, "Linear prediction filter analysis of relativistic electron properties at 6.6 R_E," J. Geophys. Res., vol. 95, no. A9, pp. 15133–15140, 1990, doi: 10.1029/JA095iA09p15133.
@@ -73,7 +63,7 @@ Legend: V = verified (publisher/Crossref/Semantic Scholar), PV = partly verified
 [34] X. Y. Wang et al., "Cross-satellite calibration of high-energy electron fluxes measured by FengYun-4A based on Arase observations," Earth Planet. Phys., vol. 7, no. 5, pp. 565–575, 2023, doi: 10.26464/epp2023076.
 [35] Indian Space Science Data Centre, "GRASP — Geostationary RAdiation SPectrometer," PRADAN. [Online]. Available: https://pradan1.issdc.gov.in/grasp/
 
-## 5. Additional entries (for IEEE Access version / extra context)
+## 4. Additional entries (for IEEE Access version / extra context)
 Physics & hazards: Meredith et al. 2015 Space Weather 13:170–184 doi:10.1002/2014SW001143 (extreme GOES >2 MeV fluxes, PV); Han et al. 2024 Solar Syst. Res. doi:10.1134/S0038094624700357 (review, PV); ICARE_NG2 2025 JSWSC (FLAG).
 Classical/operational: Boynton et al. 2013 JGR 118(4):1500–1513 NARMAX (FLAG DOI); Boynton et al. 2015 Ann. Geophys. online NARMAX (FLAG); Boynton et al. 2016 Space Weather doi:10.1002/2016SW001506 (PV); Walker et al. 2022 Space Weather e2022SW003124 (PV); SNB3GEO LANL/GOES-13 evaluation 2022 Adv. Space Res. (FLAG); Turner et al. 2011 Space Weather doi:10.1029/2010SW000647 (PV); Sakaguchi et al. 2015 Space Weather MVAR (FLAG DOI); Myagkova et al. 2017 Geomagn. Aeron. 57 doi:10.1134/S0016793217010108 (1–12 h, NN ensemble, PV); Medium-term fluence prediction 2022 Adv. Space Res. (FLAG); Bernoux et al. 2021 JSWSC 11 (FLAG).
 ML/DL: Sun et al. 2021 Remote Sens. 13(17):3347 doi:10.3390/rs13173347 (longitude mapping); Qian et al. 2020 Space Weather 18(8) doi:10.1029/2018SW002078 (PV); Tang et al. 2022 Space Weather e2021SW002969 (stacking ensemble, FLAG authors); Landis et al. 2022 Space Weather e2021SW002774 NARX (FLAG DOI); Katsavrias et al. 2022 Space Weather e2021SW002936 (FLAG title); Ma et al. 2022 Space Weather e2022SW003079; Ma et al. 2023 Space Weather e2022SW003339 (DeepSHAP); Pires de Lima et al. 2020 PreMevE 2.0 (FLAG); Feng et al. 2024 PreMevE-MEO e2024SW003975 (PV); Boyd et al. 2023 SHELLS e2022SW003338 (PV); Botek et al. 2023 PROBA-V e2023SW003466 (PV); Moon et al. 2023 Proc. IAU doi:10.1017/S1743921322004847; ANN 8–10-day lags 2022 Adv. Space Res. (FLAG).
@@ -84,8 +74,8 @@ Validation: Bergmeir & Benítez 2012 Inf. Sci. 191:192–213 doi:10.1016/j.ins.2
 Cross-satellite: Liu et al. 2019 FY-4A/GOES-13 cross-calibration (FLAG); Oh et al. 2024 Earth Planets Space 76:46 doi:10.1186/s40623-024-01992-y (KSEM vs GOES-16); GPS electron cross-calibration 2026 Satellite Navigation doi:10.1186/s43020-026-00203-1 (FLAG); Rodriguez et al. 2020 JSWSC 10 (FLAG); Bruno 2017 arXiv:1708.05641.
 Data: OMNI = King & Papitashvili 2005; Kp = Matzka 2021; GOES via NOAA NCEI; Dst/SYM-H via WDC Kyoto (cite with access dates). GRASP on GSAT-19 per ISSDC.
 
-## 6. Likely paywalled — user to download PDFs
+## 5. Likely paywalled
 Horne 2005 (Nature); Han 2024 (Solar Syst. Res.); Myagkova 2017 (Geomagn. Aeron.); three Adv. Space Res. 2022 papers (SNB3GEO evaluation; medium-term fluence; ANN 8–10-day lags); Bergmeir & Benítez 2012; Bergmeir 2018; Lim 2021 (arXiv copy exists); Roberts 2017. Older AGU papers usually free after login.
 
-## 7. Still unverified (not in list)
+## 6. Still unverified (not in list)
 NOAA REFM docs, Reeves 2011, VERB/DREAM/Salammbô, Weimer propagation, PINN reviews, TimesNet, GOES-15 EPEAD/MAGED and GOES-R SEISS instrument papers, WDC Kyoto indices.

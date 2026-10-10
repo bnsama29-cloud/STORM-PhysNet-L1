@@ -34,7 +34,7 @@ args = ap.parse_args()
 import numpy as np, pandas as pd, torch, torch.nn as nn, yaml
 from types import SimpleNamespace
 from torch.utils.data import DataLoader
-from storm_fixed.data import SW_COLS, SCALED, SEQ, HSTEPS, valid_starts, WindowSet
+from storm_pipeline.data import SW_COLS, SCALED, SEQ, HSTEPS, valid_starts, WindowSet
 
 REPO = Path(args.repo).resolve(); sys.path.insert(0, str(REPO))
 from src.data.cdf_reader import read_grasp_directory, read_wind_directory

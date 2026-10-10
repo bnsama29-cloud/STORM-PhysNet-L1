@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Train all model families for ONE block (A, B or C) with the fixed pipeline.  Resumable: finished runs are skipped.
+Train all model families for ONE block (A, B or C) with the STORM-PhysNet pipeline.  Resumable: finished runs are skipped.
 
   python train_block.py --repo /kaggle/working/STORM-PhysNet-L1 --block A --out /kaggle/working/out_A
 
@@ -30,8 +30,8 @@ ap.add_argument("--keep_ckpt", default="A", help="blocks whose checkpoints are k
 args = ap.parse_args()
 
 import numpy as np, pandas as pd, torch, yaml
-from storm_fixed.data import (build_features, Block, make_loaders, load_raw, SW_COLS, HSTEPS, BLOCKS, VAL)
-from storm_fixed.models_extra import FFNResTransformer, FluxOnly
+from storm_pipeline.data import (build_features, Block, make_loaders, load_raw, SW_COLS, HSTEPS, BLOCKS, VAL)
+from storm_pipeline.models_extra import FFNResTransformer, FluxOnly
 
 REPO = Path(args.repo).resolve()
 OUT = Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
