@@ -1,0 +1,28 @@
+% Mean prediction over all seeds
+\begin{tabular}{lcccc}
+\toprule
+Block & Model & Bagged PE\_clim 1h & Bagged PE\_clim 6h & Bagged PE\_clim 12h \\
+\midrule
+A & LSTM & 0.942 & 0.843 & 0.807 \\
+A & Transformer (matched) & 0.976 & 0.869 & 0.829 \\
+A & Transformer + residual head & 0.980 & 0.873 & 0.830 \\
+A & Transformer, flux-only & 0.976 & 0.841 & 0.775 \\
+A & STORM-Bz & 0.979 & 0.862 & 0.823 \\
+A & STORM, no delay & 0.981 & 0.867 & 0.826 \\
+A & STORM, no gate & 0.979 & 0.865 & 0.826 \\
+B & LSTM & 0.945 & 0.862 & 0.807 \\
+B & Transformer (matched) & 0.971 & 0.887 & 0.829 \\
+B & Transformer + residual head & 0.976 & 0.892 & 0.832 \\
+B & Transformer, flux-only & 0.971 & 0.855 & 0.772 \\
+B & STORM-Bz & 0.976 & 0.887 & 0.823 \\
+B & STORM, no delay & 0.977 & 0.889 & 0.822 \\
+B & STORM, no gate & 0.976 & 0.886 & 0.824 \\
+C & LSTM & 0.952 & 0.876 & 0.830 \\
+C & Transformer (matched) & 0.977 & 0.897 & 0.841 \\
+C & Transformer + residual head & 0.981 & 0.900 & 0.845 \\
+C & Transformer, flux-only & 0.977 & 0.868 & 0.789 \\
+C & STORM-Bz & 0.981 & 0.893 & 0.830 \\
+C & STORM, no delay & 0.981 & 0.894 & 0.832 \\
+C & STORM, no gate & 0.981 & 0.895 & 0.833 \\
+\bottomrule
+\end{tabular}

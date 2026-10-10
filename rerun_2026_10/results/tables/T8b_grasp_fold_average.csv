@@ -1,0 +1,9 @@
+Model,Variant,PE_clim 1h,PE_clim 6h,PE_clim 12h
+STORM-Bz,zeroshot,0.961 ± 0.001,0.827 ± 0.010,0.738 ± 0.018
+STORM-Bz,heads,0.963 ± 0.000,0.850 ± 0.007,0.787 ± 0.006
+STORM-Bz,full,0.964 ± 0.000,0.861 ± 0.004,0.802 ± 0.007
+STORM-Bz,scratch,0.963 ± 0.000,0.860 ± 0.004,0.799 ± 0.009
+Transformer (matched),zeroshot,0.887 ± 0.015,0.751 ± 0.029,0.644 ± 0.054
+Transformer (matched),heads,0.954 ± 0.003,0.843 ± 0.006,0.773 ± 0.010
+Transformer (matched),full,0.964 ± 0.001,0.857 ± 0.005,0.794 ± 0.010
+Transformer (matched),scratch,0.961 ± 0.002,0.854 ± 0.007,0.790 ± 0.013

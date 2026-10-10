@@ -1,0 +1,52 @@
+% Event: log10 flux > 3.0 (bagged predictions)
+\begin{tabular}{lccccccc}
+\toprule
+Block & Horizon & Model & HSS & POD & FAR & events & n \\
+\midrule
+A & 1h & Persistence & 0.899 & 0.933 & 0.066 & 2599 & 7536 \\
+A & 1h & LSTM & 0.872 & 0.961 & 0.122 & 2599 & 7536 \\
+A & 1h & Transformer (matched) & 0.925 & 0.965 & 0.062 & 2599 & 7536 \\
+A & 1h & Transformer + residual head & 0.931 & 0.963 & 0.053 & 2599 & 7536 \\
+A & 1h & STORM-Bz & 0.930 & 0.956 & 0.048 & 2599 & 7536 \\
+A & 6h & Persistence & 0.557 & 0.707 & 0.287 & 2615 & 7536 \\
+A & 6h & LSTM & 0.761 & 0.887 & 0.189 & 2615 & 7536 \\
+A & 6h & Transformer (matched) & 0.791 & 0.889 & 0.157 & 2615 & 7536 \\
+A & 6h & Transformer + residual head & 0.792 & 0.876 & 0.146 & 2615 & 7536 \\
+A & 6h & STORM-Bz & 0.778 & 0.871 & 0.157 & 2615 & 7536 \\
+A & 12h & Persistence & 0.405 & 0.612 & 0.394 & 2570 & 7536 \\
+A & 12h & LSTM & 0.752 & 0.875 & 0.192 & 2570 & 7536 \\
+A & 12h & Transformer (matched) & 0.777 & 0.879 & 0.168 & 2570 & 7536 \\
+A & 12h & Transformer + residual head & 0.772 & 0.865 & 0.163 & 2570 & 7536 \\
+A & 12h & STORM-Bz & 0.773 & 0.883 & 0.175 & 2570 & 7536 \\
+B & 1h & Persistence & 0.901 & 0.951 & 0.048 & 7185 & 14021 \\
+B & 1h & LSTM & 0.875 & 0.943 & 0.064 & 7185 & 14021 \\
+B & 1h & Transformer (matched) & 0.918 & 0.965 & 0.044 & 7185 & 14021 \\
+B & 1h & Transformer + residual head & 0.929 & 0.966 & 0.036 & 7185 & 14021 \\
+B & 1h & STORM-Bz & 0.925 & 0.963 & 0.036 & 7185 & 14021 \\
+B & 6h & Persistence & 0.604 & 0.804 & 0.189 & 7240 & 14021 \\
+B & 6h & LSTM & 0.797 & 0.897 & 0.095 & 7240 & 14021 \\
+B & 6h & Transformer (matched) & 0.812 & 0.894 & 0.079 & 7240 & 14021 \\
+B & 6h & Transformer + residual head & 0.818 & 0.896 & 0.075 & 7240 & 14021 \\
+B & 6h & STORM-Bz & 0.805 & 0.885 & 0.078 & 7240 & 14021 \\
+B & 12h & Persistence & 0.441 & 0.727 & 0.272 & 7184 & 14021 \\
+B & 12h & LSTM & 0.758 & 0.890 & 0.124 & 7184 & 14021 \\
+B & 12h & Transformer (matched) & 0.774 & 0.887 & 0.108 & 7184 & 14021 \\
+B & 12h & Transformer + residual head & 0.778 & 0.881 & 0.100 & 7184 & 14021 \\
+B & 12h & STORM-Bz & 0.757 & 0.872 & 0.112 & 7184 & 14021 \\
+C & 1h & Persistence & 0.928 & 0.956 & 0.042 & 5309 & 12997 \\
+C & 1h & LSTM & 0.901 & 0.935 & 0.053 & 5309 & 12997 \\
+C & 1h & Transformer (matched) & 0.945 & 0.971 & 0.036 & 5309 & 12997 \\
+C & 1h & Transformer + residual head & 0.950 & 0.968 & 0.028 & 5309 & 12997 \\
+C & 1h & STORM-Bz & 0.951 & 0.971 & 0.030 & 5309 & 12997 \\
+C & 6h & Persistence & 0.683 & 0.808 & 0.183 & 5359 & 12997 \\
+C & 6h & LSTM & 0.828 & 0.891 & 0.094 & 5359 & 12997 \\
+C & 6h & Transformer (matched) & 0.837 & 0.886 & 0.080 & 5359 & 12997 \\
+C & 6h & Transformer + residual head & 0.838 & 0.888 & 0.081 & 5359 & 12997 \\
+C & 6h & STORM-Bz & 0.830 & 0.890 & 0.092 & 5359 & 12997 \\
+C & 12h & Persistence & 0.537 & 0.723 & 0.270 & 5345 & 12997 \\
+C & 12h & LSTM & 0.790 & 0.857 & 0.107 & 5345 & 12997 \\
+C & 12h & Transformer (matched) & 0.792 & 0.853 & 0.101 & 5345 & 12997 \\
+C & 12h & Transformer + residual head & 0.791 & 0.851 & 0.101 & 5345 & 12997 \\
+C & 12h & STORM-Bz & 0.776 & 0.841 & 0.109 & 5345 & 12997 \\
+\bottomrule
+\end{tabular}
