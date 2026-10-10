@@ -7,7 +7,7 @@ Samarth B N, Samrudh S Malali, Dhyan M, Sanjana H V (RV College of Engineering).
 
 STORM-PhysNet forecasts GOES-15 >2 MeV electron log-flux at geostationary orbit 1, 6 and 12 h ahead from a 72 h history of flux and OMNI solar-wind/geomagnetic drivers. It adds three components to a Transformer encoder: a learnable propagation delay, a Bz-conditioned gate and residual-over-persistence heads. The study also tests transfer to the GRASP sensor on India's GSAT-19 (about 82°E).
 
-> **Version note (October 2026).** All current numbers come from a leakage-free re-run in [`rerun_2026_10/`](rerun_2026_10/). The original tables in `results/`, `figures/` and `checkpoints/` (15 seeds, gap-filled data, one test period) are kept for the record. They are **superseded** and should not be cited. See [What changed](#what-changed-in-the-re-run).
+> **Version note (October 2026).** Every number here comes from the leakage-free re-run in [`rerun_2026_10/`](rerun_2026_10/). The original submission's tables, figures, checkpoints and notebook were found to have data leakage, so they have been removed. They are still in the git history at commit `72008c7`. See [What changed](#what-changed-in-the-re-run).
 
 ## Headline results (re-run)
 
@@ -40,12 +40,11 @@ Full tables, paired tests, bootstrap intervals, storm-time errors, event skill, 
 | `rerun_2026_10/predictions/` | Every test prediction: 210 GOES runs (3 periods × 7 models × 10 seeds) plus 10 GRASP seeds, with run logs and split metadata | **current** |
 | `rerun_2026_10/results/` | All tables (`.csv` and `.tex`), figures, `numbers.json`, `PAPER_NUMBERS.md` with automatic claim checks | **current** |
 | `rerun_2026_10/paper/` | Revised manuscript (`.tex` and `.pdf`), its figures, EDAS abstract | **current** |
-| `src/` | Model code: STORM-PhysNet, Transformer, LSTM, trainer and losses. The re-run kit imports it unchanged. | current |
-| `configs/` | Training configuration used by both versions | current |
+| `src/` | Model code: STORM-PhysNet, Transformer, LSTM, trainer and losses. The re-run kit imports it, and its own pipeline in `kit/storm_fixed/` replaces the old data preprocessing. | current |
+| `configs/config.yaml` | Training configuration used by every re-run model | current |
 | `datasets/` | GOES-15, OMNI and GRASP input files | current |
-| `docs/audit/` | Audit that found the leakage, plus a verification script | reference |
+| `docs/audit/` | The audit that found the leakage, with a verification script (record of the old pipeline) | reference |
 | `docs/literature/` | Annotated literature collection, with corrections to earlier citations | reference |
-| `results/`, `figures/`, `checkpoints/`, `notebooks/` | Original submission (15 seeds, gap-filled data) | superseded |
 
 ## What changed in the re-run
 
