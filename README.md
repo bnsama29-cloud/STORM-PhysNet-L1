@@ -127,7 +127,7 @@ Follow each provider's terms of use.
 
 ```bibtex
 @inproceedings{samarth2026stormphysnet,
-  title     = {STORM-PhysNet: A Multi-Horizon Transformer for Geostationary Relativistic Electron Flux Forecasting and Cross-Satellite Transfer},
+  title     = {STORM-PhysNet: Multi-Horizon Forecasting of Relativistic Electron Hazards to Geostationary Satellites with Transfer to GSAT-19},
   author    = {Samarth B N and Samrudh S Malali and Dhyan M and Sanjana H V},
   booktitle = {IEEE Asia-Pacific Conference on Geoscience, Electronics and Remote Sensing Technology (AGERS)},
   year      = {2026},
