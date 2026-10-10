@@ -1,0 +1,4 @@
+Block,Test_period,Train_windows,Val_windows,Test_windows,Test_strict_windows,Test_storm6h,Filled_train,Filled_test,Min_Dst_test
+A,2018-09-07 to 2020-03-04,38909,9264,7536,4283,18,26.7%,28.7%,-69
+B,2015-01-01 to 2016-12-31,32296,9264,14021,8452,565,32.2%,10.4%,-198
+C,2012-01-01 to 2013-12-31,33413,9264,12997,7189,354,30.5%,15.9%,-139

@@ -1,4 +1,6 @@
-﻿# Official conference tables
+> **Superseded (October 2026).** These tables come from the original pipeline (15 seeds, gap-filled data, one test period). It had data leakage, documented in `docs/audit/AUDIT_FINDINGS.md`. Use `rerun_2026_10/results/` instead. These files are kept only for the record.
+
+# Official conference tables
 
 These CSVs are the numbers used in the conference paper.
 
@@ -11,6 +13,6 @@ These CSVs are the numbers used in the conference paper.
 Do not treat Access-only probes (alternative gates, wider delay) as part of this repo.
 
 ### Noise & Matched-Capacity Checks
-- `tf_ffn256_summary.csv` � FFN-matched Transformer and residual-head control
-- `noise_robustness.csv` � Gaussian input-noise and channel-dropout probe
+- `tf_ffn256_summary.csv` - FFN-matched Transformer and residual-head control
+- `noise_robustness.csv` - Gaussian input-noise and channel-dropout probe
 

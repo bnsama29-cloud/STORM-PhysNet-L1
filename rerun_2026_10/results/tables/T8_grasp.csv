@@ -1,0 +1,28 @@
+Fold,Model,Variant,N,PE_clim 1h,PE_clim 6h,PE_clim 12h
+G1,Persistence,--,1316,0.950,0.517,0.125
+G1,STORM-Bz,zeroshot,1316,0.961 ± 0.001,0.833 ± 0.009,0.749 ± 0.015
+G1,STORM-Bz,heads,1316,0.962 ± 0.001,0.851 ± 0.011,0.792 ± 0.013
+G1,STORM-Bz,full,1316,0.964 ± 0.000,0.859 ± 0.006,0.795 ± 0.011
+G1,STORM-Bz,scratch,1316,0.962 ± 0.001,0.853 ± 0.008,0.791 ± 0.020
+G1,Transformer (matched),zeroshot,1316,0.852 ± 0.019,0.704 ± 0.043,0.585 ± 0.077
+G1,Transformer (matched),heads,1316,0.949 ± 0.004,0.828 ± 0.010,0.754 ± 0.022
+G1,Transformer (matched),full,1316,0.962 ± 0.002,0.839 ± 0.010,0.763 ± 0.024
+G1,Transformer (matched),scratch,1316,0.957 ± 0.005,0.842 ± 0.012,0.765 ± 0.028
+G2,Persistence,--,1381,0.941,0.481,0.059
+G2,STORM-Bz,zeroshot,1381,0.954 ± 0.001,0.826 ± 0.013,0.757 ± 0.014
+G2,STORM-Bz,heads,1381,0.956 ± 0.001,0.863 ± 0.007,0.824 ± 0.006
+G2,STORM-Bz,full,1381,0.957 ± 0.001,0.872 ± 0.006,0.841 ± 0.007
+G2,STORM-Bz,scratch,1381,0.956 ± 0.000,0.872 ± 0.005,0.838 ± 0.008
+G2,Transformer (matched),zeroshot,1381,0.896 ± 0.012,0.779 ± 0.022,0.691 ± 0.040
+G2,Transformer (matched),heads,1381,0.950 ± 0.003,0.861 ± 0.006,0.811 ± 0.009
+G2,Transformer (matched),full,1381,0.958 ± 0.002,0.870 ± 0.008,0.835 ± 0.007
+G2,Transformer (matched),scratch,1381,0.957 ± 0.002,0.862 ± 0.015,0.826 ± 0.021
+G3,Persistence,--,2109,0.962,0.590,0.204
+G3,STORM-Bz,zeroshot,2109,0.970 ± 0.001,0.821 ± 0.010,0.709 ± 0.027
+G3,STORM-Bz,heads,2109,0.971 ± 0.000,0.837 ± 0.005,0.745 ± 0.007
+G3,STORM-Bz,full,2109,0.971 ± 0.000,0.851 ± 0.007,0.770 ± 0.012
+G3,STORM-Bz,scratch,2109,0.971 ± 0.001,0.854 ± 0.008,0.769 ± 0.019
+G3,Transformer (matched),zeroshot,2109,0.912 ± 0.014,0.771 ± 0.024,0.656 ± 0.048
+G3,Transformer (matched),heads,2109,0.965 ± 0.002,0.841 ± 0.004,0.753 ± 0.004
+G3,Transformer (matched),full,2109,0.971 ± 0.001,0.862 ± 0.009,0.785 ± 0.009
+G3,Transformer (matched),scratch,2109,0.968 ± 0.002,0.860 ± 0.005,0.781 ± 0.012

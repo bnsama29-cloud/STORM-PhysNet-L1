@@ -1,59 +1,100 @@
-Manuscript PDF is not stored in this repository; code and tables here match the submitted paper.
+# STORM-PhysNet
 
-﻿# STORM-PhysNet (conference)
+Code, data pipeline, predictions and paper for:
 
-Official code for the **IEEE conference** paper:
+**STORM-PhysNet: A Multi-Horizon Transformer for Geostationary Relativistic Electron Flux Forecasting and Cross-Satellite Transfer**
+Samarth B N, Samrudh S Malali, Dhyan M, Sanjana H V (RV College of Engineering). IEEE AGERS 2026, under review.
 
-**STORM-PhysNet: A Multi-Horizon Transformer for Geostationary Relativistic Electron Flux Forecasting with Physics-Inspired Components and Cross-Satellite Transfer**
+STORM-PhysNet forecasts GOES-15 >2 MeV electron log-flux at geostationary orbit 1, 6 and 12 h ahead from a 72 h history of flux and OMNI solar-wind/geomagnetic drivers. It adds three components to a Transformer encoder: a learnable propagation delay, a Bz-conditioned gate and residual-over-persistence heads. The study also tests transfer to the GRASP sensor on India's GSAT-19 (about 82°E).
 
-Horizons are **1 h / 6 h / 12 h** on hourly GOES–OMNI. Transfer target: GSAT-19 GRASP (Indian longitude).
+> **Version note (October 2026).** All current numbers come from a leakage-free re-run in [`rerun_2026_10/`](rerun_2026_10/). The original tables in `results/`, `figures/` and `checkpoints/` (15 seeds, gap-filled data, one test period) are kept for the record. They are **superseded** and should not be cited. See [What changed](#what-changed-in-the-re-run).
 
-This repository contains only the conference systems (LSTM, default Transformer, architecture-matched Transformer, STORM-Bz, and the three module ablations). Headline checkpoints and CSVs cover only the seven conference systems.
-Unused source files (e.g. `analogy_gates.py`) may exist in `src/` but
-are not used for any conference table or figure.
+## Headline results (re-run)
 
-## Key results (fifteen seeds)
+Prediction efficiency against climatology (PE). Seed means over 10 seeds, averaged over three test periods (2012–13, 2015–16, 2018–20; 34,554 test windows).
 
-| System | PE_1h | PE_6h | PE_12h | PE_st,6h | PE_pers,1h |
-|--------|-------|-------|--------|----------|------------|
-| LSTM | 0.955 | 0.881 | 0.840 | 0.788 | −1.19 |
-| Transformer (default) | 0.978 | 0.895 | 0.845 | 0.797 | −0.08 |
-| STORM-Bz | **0.986** | 0.900 | 0.854 | 0.812 | **+0.31** |
-| No-Delay | 0.987 | 0.902 | 0.855 | 0.809 | +0.36 |
-| No-Physics | 0.986 | 0.899 | 0.850 | 0.807 | +0.31 |
-| No-Gate | 0.986 | 0.900 | 0.856 | 0.819 | +0.32 |
-| Transformer matched | 0.980 | 0.895 | 0.845 | 0.809 | −0.01 |
-| STORM-Bz bagged | **0.987** | **0.910** | **0.870** | 0.836 | — |
-| TF matched bagged | 0.984 | 0.908 | 0.861 | 0.831 | — |
+| Model | Params | PE 1 h | PE 6 h | PE 12 h | PE vs persistence, 1 h |
+|---|---:|---:|---:|---:|---:|
+| Persistence | – | 0.968 | 0.581 | 0.261 | 0.00 |
+| LSTM | 55 k | 0.937 | 0.838 | 0.792 | −0.97 |
+| Transformer, architecture-matched | 1.19 M | 0.969 | 0.867 | 0.813 | 0.04 |
+| Transformer + residual head | 268 k | 0.976 | **0.872** | **0.815** | 0.25 |
+| Transformer, flux-only | 1.19 M | 0.968 | 0.834 | 0.753 | 0.01 |
+| **STORM-PhysNet** | 344 k | 0.977 | 0.865 | 0.803 | 0.29 |
+| STORM-PhysNet, no delay | 344 k | **0.978** | 0.869 | 0.806 | **0.32** |
+| STORM-PhysNet, no gate | 344 k | 0.977 | 0.867 | 0.805 | 0.28 |
 
-- Primary control: architecture-matched Transformer (`d_model=128`, 2 layers, 4 heads, FFN still 2048).
-- Default Transformer (`d_model=64`, 3 layers) is **not** capacity-matched.
-- Short-horizon gain is a **training-package** effect; removing delay, gate, or physics loss at inference does not erase it.
-- GRASP fine-tune: 6 h PE 0.740 → 0.841; 12 h 0.567 → 0.762 (fifteen seeds).
+What the numbers say:
+- **1 h.** STORM-PhysNet beats the matched Transformer in every test period (+0.008, paired p = 3.5e-18 over 30 seed–period pairs). The gain comes from the residual-over-persistence head.
+- **6 h and 12 h.** The two models are tied at 6 h (p = 0.14), and the matched Transformer is ahead at 12 h (−0.010). Solar-wind inputs add +0.034 and +0.060 PE at 6 and 12 h.
+- **Delay and gate.** They do not improve accuracy on clean data. They do coincide with much better robustness. With unit-variance noise on the drivers, 1 h PE is 0.970 for STORM-PhysNet versus 0.892 for the matched Transformer.
+- **GRASP (GSAT-19).** Zero-shot, STORM-PhysNet scores 0.961 / 0.827 / 0.738 at 1 / 6 / 12 h against 0.887 / 0.751 / 0.644 for the matched Transformer. After full fine-tuning the two are equal: 0.964 / 0.861 / 0.802 versus 0.964 / 0.857 / 0.794.
 
-Official CSVs are in `results/`. Checkpoints for seeds 42–56 are in `checkpoints/<model>/`.
+Full tables, paired tests, bootstrap intervals, storm-time errors, event skill, noise and GRASP results are in [`rerun_2026_10/results/`](rerun_2026_10/results/). Start with `PAPER_NUMBERS.md`.
+
+## Repository layout
+
+| Path | Contents | Status |
+|---|---|---|
+| `rerun_2026_10/kit/` | Leakage-free data pipeline (`storm_fixed/`), training (`train_block.py`), GRASP transfer (`grasp_transfer.py`), report builder (`combine_report.py`), Kaggle notebooks | **current** |
+| `rerun_2026_10/predictions/` | Every test prediction: 210 GOES runs (3 periods × 7 models × 10 seeds) plus 10 GRASP seeds, with run logs and split metadata | **current** |
+| `rerun_2026_10/results/` | All tables (`.csv` and `.tex`), figures, `numbers.json`, `PAPER_NUMBERS.md` with automatic claim checks | **current** |
+| `rerun_2026_10/paper/` | Revised manuscript (`.tex` and `.pdf`), its figures, EDAS abstract | **current** |
+| `src/` | Model code: STORM-PhysNet, Transformer, LSTM, trainer and losses. The re-run kit imports it unchanged. | current |
+| `configs/` | Training configuration used by both versions | current |
+| `datasets/` | GOES-15, OMNI and GRASP input files | current |
+| `docs/audit/` | Audit that found the leakage, plus a verification script | reference |
+| `docs/literature/` | Annotated literature collection, with corrections to earlier citations | reference |
+| `results/`, `figures/`, `checkpoints/`, `notebooks/` | Original submission (15 seeds, gap-filled data) | superseded |
+
+## What changed in the re-run
+
+An audit of the original pipeline ([`docs/audit/AUDIT_FINDINGS.md`](docs/audit/AUDIT_FINDINGS.md)) found four leakage paths. All are fixed in `rerun_2026_10/kit/storm_fixed/data.py`.
+
+1. **Gap filling from the future.** About 27–32% of GOES hours are missing. They were back-filled from later observations. Now inputs are only forward-filled, an observed-flux mask is an input channel, and a window is scored only if its last input hour and all three target hours are real observations.
+2. **Centred despiking.** A centred Hampel filter looked at future values. It has been removed.
+3. **Kp look-ahead.** OMNI repeats each 3-hourly Kp on all three hours, which exposes up to 2 h of future. Now each hour sees only the last completed Kp interval. Kp is also rescaled (OMNI stores Kp × 10).
+4. **Windows across split boundaries.** Every row is now labelled train, validation or test. A window is kept only if all of its 84 rows share one label, which leaves an 84 h buffer at each boundary.
+
+The evaluation design changed too: three disjoint test periods instead of one, a shared validation period, ten seeds, paired tests, bootstrap intervals, and three new controls (residual-head Transformer, flux-only Transformer, four GRASP regimes).
+
+On the same 2018–20 test period, 12 h PE dropped from 0.854 (old pipeline) to 0.804, which shows how much the leaks inflated skill.
 
 ## Reproduce
 
+Tables and figures from the saved predictions (CPU, about 1 minute):
+
 ```bash
 pip install -r requirements.txt
-# then run notebooks/STORM_PhysNet_Master.ipynb
-# set DEMO_MODE = False only if you want a full 15-seed retrain
+cd rerun_2026_10/predictions
+for z in *.zip; do unzip -q "$z" -d "${z%.zip}"; done
+python ../kit/combine_report.py --inputs preds_blockA_and_GRASP preds_blockB preds_blockC --out ../results_check
 ```
 
-Test PE is computed once after training and is not used for model selection. Headline tables load from `results/*.csv`.
+Retraining from scratch takes about 25 GPU-hours on a T4. Use the notebooks in `rerun_2026_10/kit/notebooks/` and follow `rerun_2026_10/kit/README.md`. They are written for three free Kaggle accounts in parallel, plus a CPU-only combine step.
+
+The kit was run against this repository at commit `72008c75`.
+
+## Data
+
+- GOES-15 EPEAD >2 MeV electrons: NOAA NCEI, https://www.ngdc.noaa.gov/stp/satellite/goes/
+- OMNI hourly solar wind and indices: NASA OMNIWeb, https://omniweb.gsfc.nasa.gov/
+- GSAT-19 GRASP: ISSDC PRADAN, https://pradan1.issdc.gov.in/grasp/
+
+Follow each provider's terms of use.
 
 ## Citation
 
 ```bibtex
-@inproceedings{samarth2026storm,
-  title={STORM-PhysNet: A Multi-Horizon Transformer for Geostationary Relativistic Electron Flux Forecasting with Physics-Inspired Components and Cross-Satellite Transfer},
-  author={Samarth BN},
-  year={2026},
-  note={IEEE conference, under review}
+@inproceedings{samarth2026stormphysnet,
+  title     = {STORM-PhysNet: A Multi-Horizon Transformer for Geostationary Relativistic Electron Flux Forecasting and Cross-Satellite Transfer},
+  author    = {Samarth B N and Samrudh S Malali and Dhyan M and Sanjana H V},
+  booktitle = {IEEE Asia-Pacific Conference on Geoscience, Electronics and Remote Sensing Technology (AGERS)},
+  year      = {2026},
+  note      = {Under review}
 }
 ```
 
 ## License
 
-MIT for code. Follow NOAA / NASA / ISSDC terms for GOES, OMNI, and GRASP data.
+MIT for code (see `LICENSE`).

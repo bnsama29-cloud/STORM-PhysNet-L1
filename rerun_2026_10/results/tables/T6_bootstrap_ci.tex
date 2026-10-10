@@ -1,0 +1,43 @@
+% 7-day block bootstrap, 2000 resamples
+\begin{tabular}{lccccc}
+\toprule
+Block & Comparison & Horizon & dPE & CI95 & excludes\_0 \\
+\midrule
+A & STORM-Bz - Transformer (matched) (bagged) & 1h & +0.0028 & [+0.0021, +0.0037] & True \\
+A & STORM-Bz - Transformer (matched) (bagged) & 6h & -0.0071 & [-0.0138, -0.0014] & True \\
+A & STORM-Bz - Transformer (matched) (bagged) & 12h & -0.0065 & [-0.0144, +0.0009] & False \\
+A & STORM-Bz - Transformer + residual head (bagged) & 1h & -0.0007 & [-0.0014, -0.0003] & True \\
+A & STORM-Bz - Transformer + residual head (bagged) & 6h & -0.0111 & [-0.0162, -0.0074] & True \\
+A & STORM-Bz - Transformer + residual head (bagged) & 12h & -0.0067 & [-0.0146, -0.0005] & True \\
+A & STORM-Bz PE\_clim (bagged) & 1h & 0.9791 & [0.9741, 0.9823] &  \\
+A & STORM-Bz PE\_clim (bagged) & 6h & 0.8619 & [0.8302, 0.8844] &  \\
+A & STORM-Bz PE\_clim (bagged) & 12h & 0.8230 & [0.7822, 0.8531] &  \\
+A & Transformer (matched) PE\_clim (bagged) & 1h & 0.9763 & [0.9711, 0.9797] &  \\
+A & Transformer (matched) PE\_clim (bagged) & 6h & 0.8690 & [0.8395, 0.8898] &  \\
+A & Transformer (matched) PE\_clim (bagged) & 12h & 0.8295 & [0.7902, 0.8589] &  \\
+B & STORM-Bz - Transformer (matched) (bagged) & 1h & +0.0049 & [+0.0027, +0.0077] & True \\
+B & STORM-Bz - Transformer (matched) (bagged) & 6h & +0.0001 & [-0.0049, +0.0055] & False \\
+B & STORM-Bz - Transformer (matched) (bagged) & 12h & -0.0064 & [-0.0120, -0.0008] & True \\
+B & STORM-Bz - Transformer + residual head (bagged) & 1h & -0.0003 & [-0.0008, +0.0003] & False \\
+B & STORM-Bz - Transformer + residual head (bagged) & 6h & -0.0048 & [-0.0084, -0.0014] & True \\
+B & STORM-Bz - Transformer + residual head (bagged) & 12h & -0.0094 & [-0.0148, -0.0044] & True \\
+B & STORM-Bz PE\_clim (bagged) & 1h & 0.9760 & [0.9716, 0.9794] &  \\
+B & STORM-Bz PE\_clim (bagged) & 6h & 0.8869 & [0.8676, 0.9018] &  \\
+B & STORM-Bz PE\_clim (bagged) & 12h & 0.8228 & [0.7902, 0.8474] &  \\
+B & Transformer (matched) PE\_clim (bagged) & 1h & 0.9710 & [0.9654, 0.9757] &  \\
+B & Transformer (matched) PE\_clim (bagged) & 6h & 0.8868 & [0.8677, 0.9027] &  \\
+B & Transformer (matched) PE\_clim (bagged) & 12h & 0.8292 & [0.7979, 0.8523] &  \\
+C & STORM-Bz - Transformer (matched) (bagged) & 1h & +0.0041 & [+0.0023, +0.0067] & True \\
+C & STORM-Bz - Transformer (matched) (bagged) & 6h & -0.0037 & [-0.0098, +0.0034] & False \\
+C & STORM-Bz - Transformer (matched) (bagged) & 12h & -0.0118 & [-0.0190, -0.0045] & True \\
+C & STORM-Bz - Transformer + residual head (bagged) & 1h & +0.0000 & [-0.0007, +0.0008] & False \\
+C & STORM-Bz - Transformer + residual head (bagged) & 6h & -0.0072 & [-0.0112, -0.0038] & True \\
+C & STORM-Bz - Transformer + residual head (bagged) & 12h & -0.0151 & [-0.0214, -0.0092] & True \\
+C & STORM-Bz PE\_clim (bagged) & 1h & 0.9808 & [0.9763, 0.9842] &  \\
+C & STORM-Bz PE\_clim (bagged) & 6h & 0.8930 & [0.8707, 0.9095] &  \\
+C & STORM-Bz PE\_clim (bagged) & 12h & 0.8297 & [0.8002, 0.8531] &  \\
+C & Transformer (matched) PE\_clim (bagged) & 1h & 0.9767 & [0.9702, 0.9812] &  \\
+C & Transformer (matched) PE\_clim (bagged) & 6h & 0.8967 & [0.8721, 0.9145] &  \\
+C & Transformer (matched) PE\_clim (bagged) & 12h & 0.8415 & [0.8105, 0.8651] &  \\
+\bottomrule
+\end{tabular}
