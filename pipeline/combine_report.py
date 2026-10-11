@@ -260,7 +260,7 @@ for k, b in enumerate(BLOCKS[:3]):
         ax[k].errorbar(H, mu, sd_, marker="o", ms=3, lw=1, capsize=2, color=COL[f], label=NAMES[f])
     y, pers = metas[b]["y"], metas[b]["persist"]; ax[k].plot(H, pe_clim(y, np.repeat(pers[:, None], 3, 1)), "k--", lw=1, label="Persistence")
     ax[k].set_title(f"Block {b}"); ax[k].set_xlabel("horizon (h)"); ax[k].set_xticks(H)
-ax[0].set_ylabel(r"$PE_{clim}$"); ax[-1].legend(fontsize=5, loc="lower left"); fig.tight_layout(); fig.savefig(OUT / "figures/fig_horizon.png"); plt.close(fig)
+ax[0].set_ylabel(r"$PE_{clim}$"); h_, l_ = ax[-1].get_legend_handles_labels(); fig.legend(h_, l_, loc="lower center", ncol=4, fontsize=7.5, frameon=False); fig.tight_layout(rect=(0, 0.17, 1, 1)); fig.savefig(OUT / "figures/fig_horizon.png"); plt.close(fig)
 
 if "storm_bz" in fam_all and "transformer_matched" in fam_all:
     fig, ax = plt.subplots(1, 3, figsize=(7, 2.3))
@@ -278,7 +278,7 @@ if "storm_bz" in fam_all and len(nz_df):
             q = nz_df[nz_df.Model == NAMES[f]].groupby("sigma")[f"PE_clim {h}h"].mean()
             if len(q): ax[i].plot(q.index, q.values, marker="o", ms=3, color=COL[f], label=NAMES[f])
         ax[i].set_title(f"{h} h"); ax[i].set_xlabel(r"noise $\sigma$ (standardised units)")
-    ax[0].set_ylabel(r"$PE_{clim}$"); ax[0].legend(fontsize=5); fig.tight_layout(); fig.savefig(OUT / "figures/fig_noise.png"); plt.close(fig)
+    ax[0].set_ylabel(r"$PE_{clim}$"); ax[0].legend(fontsize=7.5); fig.tight_layout(); fig.savefig(OUT / "figures/fig_noise.png"); plt.close(fig)
 
 # case study: deepest-Dst event of the pooled test blocks, 6-h lead
 bb = min(BLOCKS, key=lambda b: metas[b]["dst_target"][:, 1].min())
@@ -293,7 +293,7 @@ ax[0].plot(t, m["y"][lo:hi, 1], "k.", ms=2, label="GOES-15 observed")
 ax[0].plot(*gapify(t, np.repeat(m["persist"][:, None], 3, 1)[lo:hi, 1]), color="#888", lw=.8, label="Persistence")
 for f in ["transformer_matched", "storm_bz"]:
     if f in fam_all: ax[0].plot(*gapify(t, SC[bb][f]["bag"][lo:hi, 1]), color=COL[f], lw=1, label=NAMES[f] + " (bagged)")
-ax[0].set_ylabel(r"log$_{10}$ flux (6 h lead)"); ax[0].legend(fontsize=5); ax[1].plot(*gapify(t, m["dst_target"][lo:hi, 1]), color="#444"); ax[1].set_ylabel("Dst (nT)")
+ax[0].set_ylabel(r"log$_{10}$ flux (6 h lead)"); ax[0].legend(fontsize=6.5, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.0), frameon=False, columnspacing=0.8, handlelength=1.5); ax[1].plot(*gapify(t, m["dst_target"][lo:hi, 1]), color="#444"); ax[1].set_ylabel("Dst (nT)")
 fig.autofmt_xdate(); fig.tight_layout(); fig.savefig(OUT / "figures/fig_case_study.png"); plt.close(fig)
 NUM["case_study"] = dict(block=bb, min_dst=float(m["dst_target"][i0, 1]), centre_time=str(pd.to_datetime(m["t_origin"][i0])))
 
