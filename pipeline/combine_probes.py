@@ -25,13 +25,13 @@ OUT = Path(args.out); (OUT / "tables").mkdir(parents=True, exist_ok=True); (OUT 
 H = [1, 6, 12]
 NAMES = {"storm_bz": "STORM-PhysNet", "storm_no_delay": "STORM, no delay", "storm_no_gate": "STORM, no gate",
          "tf_ffn_res": "TF + residual", "transformer_matched": "TF matched"}
-COL = {"storm_bz": "#1b9e77", "storm_no_delay": "#66a61e", "storm_no_gate": "#e7298a", "tf_ffn_res": "#7570b3",
+COL = {"storm_bz": "#1b9e77", "storm_no_delay": "#a6761d", "storm_no_gate": "#e7298a", "tf_ffn_res": "#7570b3",
        "transformer_matched": "#d95f02"}
 PROBES = [("pred", "clean"), ("pred_noise0.5", "noise 0.5"), ("pred_noise1", "noise 1"), ("pred_noise2", "noise 2"),
           ("pred_out6", "drivers missing 6 h"), ("pred_out24", "drivers missing 24 h"), ("pred_out72", "no drivers"),
           ("pred_lag3", "Kp/Dst 3 h late")]
 NUM = {}
-plt.rcParams.update({"font.size": 8, "axes.grid": True, "grid.alpha": .3, "figure.dpi": 150, "savefig.dpi": 300,
+plt.rcParams.update({"font.size": 9, "axes.grid": True, "grid.alpha": .3, "figure.dpi": 150, "savefig.dpi": 300,
                      "font.family": "serif"})
 
 
@@ -134,16 +134,30 @@ if BLOCKS:
                                  **{f"probe runs {h}h": round(float(new[i]), 3) for i, h in enumerate(H)}))
         if rows: save(pd.DataFrame(rows), "P0_clean_agreement", "Clean PE_clim: original runs vs the probe runs")
 
-    fig, ax = plt.subplots(1, 3, figsize=(7.2, 2.6), sharey=False)
-    xl = [lab for key, lab in PROBES]
+    # dot plot: one panel per horizon, conditions on x, one marker shape + colour per model (offset within a condition)
+    MK = {"storm_bz": "o", "storm_no_delay": "s", "storm_no_gate": "^", "tf_ffn_res": "D", "transformer_matched": "v"}
+    XL = {"clean": "clean", "noise 0.5": "noise\n$\\sigma$=0.5", "noise 1": "noise\n$\\sigma$=1", "noise 2": "noise\n$\\sigma$=2",
+          "drivers missing 6 h": "drivers\nmissing 6 h", "drivers missing 24 h": "drivers\nmissing 24 h",
+          "no drivers": "no\ndrivers", "Kp/Dst 3 h late": "Kp/Dst\n3 h late"}
+    pers = np.mean([pe_clim(metas[b]["y"], np.repeat(metas[b]["persist"][:, None], 3, 1)) for b in BLOCKS], 0)
+    fig, ax = plt.subplots(3, 1, figsize=(7.16, 4.4), sharex=True)
+    off = np.linspace(-0.28, 0.28, len(FAMS))
     for i, h in enumerate(H):
-        for f in FAMS:
-            ys = [bavg(f, key)[i] if (f, key) in S else np.nan for key, _ in PROBES]
-            ax[i].plot(range(len(xl)), ys, "o-", ms=3, lw=1.2, color=COL[f], label=NAMES[f])
-        ax[i].set_xticks(range(len(xl))); ax[i].set_xticklabels(xl, rotation=55, ha="right", fontsize=6.5)
-        ax[i].set_title(f"{h} h")
-    ax[0].set_ylabel(r"$PE_{clim}$"); ax[0].legend(fontsize=6.5); fig.tight_layout()
-    fig.savefig(OUT / "figures/fig_probes.png"); plt.close(fig)
+        for j, f in enumerate(FAMS):
+            xs = [k + off[j] for k, (key, _) in enumerate(PROBES) if (f, key) in S]
+            ys = [bavg(f, key)[i] for key, _ in PROBES if (f, key) in S]
+            ax[i].plot(xs, ys, MK[f], ms=5, color=COL[f], mec="white", mew=0.6, label=NAMES[f], zorder=3)
+        ax[i].axhline(pers[i], ls="--", lw=0.9, color="#555555", zorder=1)
+        ax[i].text(len(PROBES) - 0.55, pers[i] + (-0.004 if i == 0 else 0.006), "persistence ", va="top" if i == 0 else "bottom", ha="right", fontsize=7, color="#444444")
+        for k in range(1, len(PROBES)): ax[i].axvline(k - 0.5, color="#dddddd", lw=0.6, zorder=0)
+        ax[i].set_ylabel(f"PE, {h} h"); ax[i].grid(axis="x", visible=False)
+        lo = min(min(bavg(f, key)[i] for f in FAMS for key, _ in PROBES if (f, key) in S), pers[i])
+        ax[i].set_ylim(lo - 0.06 * (1 - lo) - 0.01, 1.0 if i == 0 else None)
+    ax[-1].set_xticks(range(len(PROBES))); ax[-1].set_xticklabels([XL[l] for _, l in PROBES], fontsize=8)
+    ax[-1].set_xlim(-0.5, len(PROBES) - 0.5)
+    ax[0].legend(ncol=5, fontsize=8, loc="lower center", bbox_to_anchor=(0.5, 1.02), frameon=False, handletextpad=0.2, columnspacing=1.0)
+    fig.tight_layout(h_pad=0.4); fig.savefig(OUT / "figures/fig_probes.png"); plt.close(fig)
+    NUM["persistence"] = pers.tolist()
 
 # ------------------------------------------------------------------------------------------------ GRASP
 G = {}

@@ -1,0 +1,1586 @@
+{
+ "seeds": {
+  "A": [
+   42,
+   43,
+   44,
+   45,
+   46,
+   47,
+   48,
+   49,
+   50,
+   51
+  ],
+  "B": [
+   42,
+   43,
+   44,
+   45,
+   46,
+   47,
+   48,
+   49,
+   50,
+   51
+  ],
+  "C": [
+   42,
+   43,
+   44,
+   45,
+   46,
+   47,
+   48,
+   49,
+   50,
+   51
+  ]
+ },
+ "blocks": [
+  "A",
+  "B",
+  "C"
+ ],
+ "storm_bz|clean": [
+  0.9771051406860352,
+  0.8651472926139832,
+  0.8030323386192322
+ ],
+ "storm_no_delay|clean": [
+  0.9780879616737366,
+  0.8688745498657227,
+  0.8056583404541016
+ ],
+ "storm_no_gate|clean": [
+  0.9768672585487366,
+  0.8668131828308105,
+  0.805469274520874
+ ],
+ "tf_ffn_res|clean": [
+  0.9759449362754822,
+  0.8722382187843323,
+  0.814814567565918
+ ],
+ "transformer_matched|clean": [
+  0.9690032601356506,
+  0.8673434853553772,
+  0.8134209513664246
+ ],
+ "storm_bz|noise 0.5": [
+  0.975115954875946,
+  0.8430228233337402,
+  0.7695077061653137
+ ],
+ "storm_no_delay|noise 0.5": [
+  0.9722129702568054,
+  0.833775520324707,
+  0.7549871802330017
+ ],
+ "storm_no_gate|noise 0.5": [
+  0.9750472903251648,
+  0.8461251258850098,
+  0.7742476463317871
+ ],
+ "tf_ffn_res|noise 0.5": [
+  0.9686498641967773,
+  0.8428176045417786,
+  0.7752652764320374
+ ],
+ "transformer_matched|noise 0.5": [
+  0.9520667195320129,
+  0.8393303751945496,
+  0.7833459973335266
+ ],
+ "storm_bz|noise 1": [
+  0.9701713919639587,
+  0.7822489738464355,
+  0.6751870512962341
+ ],
+ "storm_no_delay|noise 1": [
+  0.9600421786308289,
+  0.7395880222320557,
+  0.6083599328994751
+ ],
+ "storm_no_gate|noise 1": [
+  0.9706876873970032,
+  0.787762463092804,
+  0.6846318244934082
+ ],
+ "tf_ffn_res|noise 1": [
+  0.9489606022834778,
+  0.7568378448486328,
+  0.6538200974464417
+ ],
+ "transformer_matched|noise 1": [
+  0.8916603922843933,
+  0.7433664202690125,
+  0.6745578646659851
+ ],
+ "storm_bz|noise 2": [
+  0.9604439735412598,
+  0.6371874213218689,
+  0.4363879859447479
+ ],
+ "storm_no_delay|noise 2": [
+  0.945341169834137,
+  0.5685199499130249,
+  0.3124808371067047
+ ],
+ "storm_no_gate|noise 2": [
+  0.9618965983390808,
+  0.6456038951873779,
+  0.45301803946495056
+ ],
+ "tf_ffn_res|noise 2": [
+  0.8948893547058105,
+  0.553925096988678,
+  0.352080374956131
+ ],
+ "transformer_matched|noise 2": [
+  0.6511321067810059,
+  0.48123160004615784,
+  0.3913600444793701
+ ],
+ "storm_bz|drivers missing 6 h": [
+  0.9746408462524414,
+  0.8397760391235352,
+  0.7692945599555969
+ ],
+ "storm_no_delay|drivers missing 6 h": [
+  0.9748409390449524,
+  0.8406622409820557,
+  0.7694968581199646
+ ],
+ "storm_no_gate|drivers missing 6 h": [
+  0.9744278788566589,
+  0.8414240479469299,
+  0.7724399566650391
+ ],
+ "tf_ffn_res|drivers missing 6 h": [
+  0.9716430306434631,
+  0.8425950407981873,
+  0.7754338383674622
+ ],
+ "transformer_matched|drivers missing 6 h": [
+  0.9627499580383301,
+  0.8362804055213928,
+  0.7713409066200256
+ ],
+ "storm_bz|drivers missing 24 h": [
+  0.9692086577415466,
+  0.7574481964111328,
+  0.654429018497467
+ ],
+ "storm_no_delay|drivers missing 24 h": [
+  0.9687708020210266,
+  0.7543056011199951,
+  0.649610698223114
+ ],
+ "storm_no_gate|drivers missing 24 h": [
+  0.9689843058586121,
+  0.7591641545295715,
+  0.6590110063552856
+ ],
+ "tf_ffn_res|drivers missing 24 h": [
+  0.9632294774055481,
+  0.7465794682502747,
+  0.6495596766471863
+ ],
+ "transformer_matched|drivers missing 24 h": [
+  0.9412055015563965,
+  0.7148222327232361,
+  0.6184788346290588
+ ],
+ "storm_bz|no drivers": [
+  0.9725139141082764,
+  0.750505268573761,
+  0.6560706496238708
+ ],
+ "storm_no_delay|no drivers": [
+  0.9724903106689453,
+  0.747139036655426,
+  0.6533243656158447
+ ],
+ "storm_no_gate|no drivers": [
+  0.9704590439796448,
+  0.717383861541748,
+  0.6217189431190491
+ ],
+ "tf_ffn_res|no drivers": [
+  0.9701762795448303,
+  0.7313525676727295,
+  0.6140092015266418
+ ],
+ "transformer_matched|no drivers": [
+  0.9609257578849792,
+  0.7170624136924744,
+  0.6120502948760986
+ ],
+ "storm_bz|Kp/Dst 3 h late": [
+  0.9767332673072815,
+  0.8619598746299744,
+  0.7998362183570862
+ ],
+ "storm_no_delay|Kp/Dst 3 h late": [
+  0.9773315787315369,
+  0.8649658560752869,
+  0.8023848533630371
+ ],
+ "storm_no_gate|Kp/Dst 3 h late": [
+  0.976620614528656,
+  0.8647863268852234,
+  0.8027873635292053
+ ],
+ "tf_ffn_res|Kp/Dst 3 h late": [
+  0.9748044013977051,
+  0.8686137199401855,
+  0.8125269412994385
+ ],
+ "transformer_matched|Kp/Dst 3 h late": [
+  0.9676867127418518,
+  0.8639460206031799,
+  0.8114064335823059
+ ],
+ "paired": [
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "1h",
+   "dPE": "-0.0010",
+   "p": "3.34e-08",
+   "n": 30,
+   "p_holm": "2.27e-06"
+  },
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "6h",
+   "dPE": "-0.0037",
+   "p": "3.56e-05",
+   "n": 30,
+   "p_holm": "1.99e-03"
+  },
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "12h",
+   "dPE": "-0.0026",
+   "p": "1.92e-02",
+   "n": 30,
+   "p_holm": "7.49e-01"
+  },
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "1h",
+   "dPE": "+0.0002",
+   "p": "1.13e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "6h",
+   "dPE": "-0.0017",
+   "p": "1.84e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "12h",
+   "dPE": "-0.0024",
+   "p": "5.09e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "+0.0012",
+   "p": "5.45e-06",
+   "n": 30,
+   "p_holm": "3.11e-04"
+  },
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "-0.0071",
+   "p": "8.57e-07",
+   "n": 30,
+   "p_holm": "5.14e-05"
+  },
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "-0.0118",
+   "p": "4.09e-08",
+   "n": 30,
+   "p_holm": "2.74e-06"
+  },
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.0081",
+   "p": "3.52e-18",
+   "n": 30,
+   "p_holm": "3.20e-16"
+  },
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "-0.0022",
+   "p": "1.36e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "clean",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "-0.0104",
+   "p": "1.36e-08",
+   "n": 30,
+   "p_holm": "9.53e-07"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "1h",
+   "dPE": "+0.0029",
+   "p": "2.41e-10",
+   "n": 30,
+   "p_holm": "1.86e-08"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "6h",
+   "dPE": "+0.0092",
+   "p": "2.72e-08",
+   "n": 30,
+   "p_holm": "1.88e-06"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "12h",
+   "dPE": "+0.0145",
+   "p": "6.68e-08",
+   "n": 30,
+   "p_holm": "4.41e-06"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "1h",
+   "dPE": "+0.0001",
+   "p": "7.50e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "6h",
+   "dPE": "-0.0031",
+   "p": "2.82e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "12h",
+   "dPE": "-0.0047",
+   "p": "1.20e-02",
+   "n": 30,
+   "p_holm": "5.14e-01"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "+0.0065",
+   "p": "1.58e-16",
+   "n": 30,
+   "p_holm": "1.42e-14"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "+0.0002",
+   "p": "8.79e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "-0.0058",
+   "p": "1.81e-02",
+   "n": 30,
+   "p_holm": "7.24e-01"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.0230",
+   "p": "1.71e-25",
+   "n": 30,
+   "p_holm": "1.64e-23"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "+0.0037",
+   "p": "9.67e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "noise 0.5",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "-0.0138",
+   "p": "2.10e-07",
+   "n": 30,
+   "p_holm": "1.32e-05"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "1h",
+   "dPE": "+0.0101",
+   "p": "3.72e-13",
+   "n": 30,
+   "p_holm": "3.16e-11"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "6h",
+   "dPE": "+0.0427",
+   "p": "1.37e-12",
+   "n": 30,
+   "p_holm": "1.11e-10"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "12h",
+   "dPE": "+0.0668",
+   "p": "1.19e-12",
+   "n": 30,
+   "p_holm": "9.73e-11"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "1h",
+   "dPE": "-0.0005",
+   "p": "2.68e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "6h",
+   "dPE": "-0.0055",
+   "p": "2.36e-02",
+   "n": 30,
+   "p_holm": "8.73e-01"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "12h",
+   "dPE": "-0.0094",
+   "p": "1.70e-02",
+   "n": 30,
+   "p_holm": "7.13e-01"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "+0.0212",
+   "p": "1.35e-15",
+   "n": 30,
+   "p_holm": "1.18e-13"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "+0.0254",
+   "p": "5.06e-09",
+   "n": 30,
+   "p_holm": "3.64e-07"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "+0.0214",
+   "p": "1.17e-03",
+   "n": 30,
+   "p_holm": "5.37e-02"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.0785",
+   "p": "1.04e-21",
+   "n": 30,
+   "p_holm": "9.75e-20"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "+0.0389",
+   "p": "7.52e-07",
+   "n": 30,
+   "p_holm": "4.59e-05"
+  },
+  {
+   "Probe": "noise 1",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "+0.0006",
+   "p": "9.27e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "1h",
+   "dPE": "+0.0151",
+   "p": "2.11e-12",
+   "n": 30,
+   "p_holm": "1.68e-10"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "6h",
+   "dPE": "+0.0687",
+   "p": "1.23e-11",
+   "n": 30,
+   "p_holm": "9.69e-10"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "12h",
+   "dPE": "+0.1239",
+   "p": "4.63e-13",
+   "n": 30,
+   "p_holm": "3.89e-11"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "1h",
+   "dPE": "-0.0015",
+   "p": "1.09e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "6h",
+   "dPE": "-0.0084",
+   "p": "1.21e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "12h",
+   "dPE": "-0.0166",
+   "p": "7.87e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "+0.0656",
+   "p": "2.97e-14",
+   "n": 30,
+   "p_holm": "2.58e-12"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "+0.0833",
+   "p": "6.37e-13",
+   "n": 30,
+   "p_holm": "5.29e-11"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "+0.0843",
+   "p": "1.33e-07",
+   "n": 30,
+   "p_holm": "8.67e-06"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.3093",
+   "p": "3.65e-22",
+   "n": 30,
+   "p_holm": "3.47e-20"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "+0.1560",
+   "p": "3.15e-11",
+   "n": 30,
+   "p_holm": "2.45e-09"
+  },
+  {
+   "Probe": "noise 2",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "+0.0450",
+   "p": "1.70e-02",
+   "n": 30,
+   "p_holm": "7.13e-01"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "1h",
+   "dPE": "-0.0002",
+   "p": "3.22e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "6h",
+   "dPE": "-0.0009",
+   "p": "3.61e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "12h",
+   "dPE": "-0.0002",
+   "p": "8.70e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "1h",
+   "dPE": "+0.0002",
+   "p": "3.21e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "6h",
+   "dPE": "-0.0016",
+   "p": "2.10e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "12h",
+   "dPE": "-0.0031",
+   "p": "2.20e-02",
+   "n": 30,
+   "p_holm": "8.35e-01"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "+0.0030",
+   "p": "2.49e-09",
+   "n": 30,
+   "p_holm": "1.82e-07"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "-0.0028",
+   "p": "9.06e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "-0.0061",
+   "p": "3.19e-03",
+   "n": 30,
+   "p_holm": "1.40e-01"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.0119",
+   "p": "2.76e-19",
+   "n": 30,
+   "p_holm": "2.56e-17"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "+0.0035",
+   "p": "7.04e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 6 h",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "-0.0020",
+   "p": "2.45e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "1h",
+   "dPE": "+0.0004",
+   "p": "1.92e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "6h",
+   "dPE": "+0.0031",
+   "p": "3.43e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "12h",
+   "dPE": "+0.0048",
+   "p": "5.34e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "1h",
+   "dPE": "+0.0002",
+   "p": "5.61e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "6h",
+   "dPE": "-0.0017",
+   "p": "4.50e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "12h",
+   "dPE": "-0.0046",
+   "p": "6.89e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "+0.0060",
+   "p": "2.75e-10",
+   "n": 30,
+   "p_holm": "2.09e-08"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "+0.0109",
+   "p": "8.44e-04",
+   "n": 30,
+   "p_holm": "4.05e-02"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "+0.0049",
+   "p": "1.41e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.0280",
+   "p": "2.94e-16",
+   "n": 30,
+   "p_holm": "2.61e-14"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "+0.0426",
+   "p": "2.93e-10",
+   "n": 30,
+   "p_holm": "2.20e-08"
+  },
+  {
+   "Probe": "drivers missing 24 h",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "+0.0360",
+   "p": "5.51e-09",
+   "n": 30,
+   "p_holm": "3.91e-07"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "1h",
+   "dPE": "+0.0000",
+   "p": "9.32e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "6h",
+   "dPE": "+0.0034",
+   "p": "5.00e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "12h",
+   "dPE": "+0.0027",
+   "p": "6.22e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "1h",
+   "dPE": "+0.0021",
+   "p": "1.57e-06",
+   "n": 30,
+   "p_holm": "9.13e-05"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "6h",
+   "dPE": "+0.0331",
+   "p": "4.90e-05",
+   "n": 30,
+   "p_holm": "2.59e-03"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "12h",
+   "dPE": "+0.0344",
+   "p": "1.53e-04",
+   "n": 30,
+   "p_holm": "7.64e-03"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "+0.0023",
+   "p": "4.04e-05",
+   "n": 30,
+   "p_holm": "2.22e-03"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "+0.0192",
+   "p": "2.03e-03",
+   "n": 30,
+   "p_holm": "9.14e-02"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "+0.0421",
+   "p": "1.01e-04",
+   "n": 30,
+   "p_holm": "5.15e-03"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.0116",
+   "p": "2.78e-13",
+   "n": 30,
+   "p_holm": "2.39e-11"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "+0.0334",
+   "p": "4.04e-05",
+   "n": 30,
+   "p_holm": "2.22e-03"
+  },
+  {
+   "Probe": "no drivers",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "+0.0440",
+   "p": "1.18e-06",
+   "n": 30,
+   "p_holm": "6.96e-05"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "1h",
+   "dPE": "-0.0006",
+   "p": "3.01e-04",
+   "n": 30,
+   "p_holm": "1.47e-02"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "6h",
+   "dPE": "-0.0030",
+   "p": "8.99e-04",
+   "n": 30,
+   "p_holm": "4.23e-02"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "12h",
+   "dPE": "-0.0025",
+   "p": "4.27e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "1h",
+   "dPE": "+0.0001",
+   "p": "4.88e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "6h",
+   "dPE": "-0.0028",
+   "p": "3.22e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "12h",
+   "dPE": "-0.0030",
+   "p": "3.84e-02",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "+0.0019",
+   "p": "2.15e-09",
+   "n": 30,
+   "p_holm": "1.59e-07"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "-0.0067",
+   "p": "5.87e-05",
+   "n": 30,
+   "p_holm": "3.05e-03"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "-0.0127",
+   "p": "3.88e-07",
+   "n": 30,
+   "p_holm": "2.40e-05"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.0090",
+   "p": "2.84e-18",
+   "n": 30,
+   "p_holm": "2.61e-16"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "-0.0020",
+   "p": "2.49e-01",
+   "n": 30,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Probe": "Kp/Dst 3 h late",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "-0.0116",
+   "p": "1.81e-07",
+   "n": 30,
+   "p_holm": "1.16e-05"
+  }
+ ],
+ "persistence": [
+  0.9676253199577332,
+  0.5813498497009277,
+  0.2609262466430664
+ ],
+ "grasp|storm_bz|zeroshot": [
+  0.9614924192428589,
+  0.8267234563827515,
+  0.7384610772132874
+ ],
+ "grasp|storm_bz|heads": [
+  0.9631057977676392,
+  0.8503829836845398,
+  0.7871252298355103
+ ],
+ "grasp|storm_bz|full": [
+  0.9640731811523438,
+  0.860698401927948,
+  0.8019667863845825
+ ],
+ "grasp|storm_bz|scratch": [
+  0.9630252718925476,
+  0.859675407409668,
+  0.7991736531257629
+ ],
+ "grasp|storm_no_delay|zeroshot": [
+  0.9611881971359253,
+  0.8275007009506226,
+  0.7332667112350464
+ ],
+ "grasp|storm_no_delay|heads": [
+  0.9643858075141907,
+  0.8512387275695801,
+  0.7877349257469177
+ ],
+ "grasp|storm_no_delay|full": [
+  0.9661296010017395,
+  0.8666186332702637,
+  0.813274085521698
+ ],
+ "grasp|storm_no_gate|zeroshot": [
+  0.9620963335037231,
+  0.825303852558136,
+  0.7461521029472351
+ ],
+ "grasp|storm_no_gate|heads": [
+  0.9632981419563293,
+  0.8509546518325806,
+  0.7868131399154663
+ ],
+ "grasp|storm_no_gate|full": [
+  0.9642828106880188,
+  0.8607677221298218,
+  0.8003805875778198
+ ],
+ "grasp|tf_ffn_res|zeroshot": [
+  0.9604276418685913,
+  0.8367462158203125,
+  0.7605316042900085
+ ],
+ "grasp|tf_ffn_res|heads": [
+  0.9632957577705383,
+  0.8512809872627258,
+  0.7839899063110352
+ ],
+ "grasp|tf_ffn_res|full": [
+  0.9650585055351257,
+  0.86186283826828,
+  0.8018191456794739
+ ],
+ "grasp|tf_ffn_res|scratch": [
+  0.9640443921089172,
+  0.8582517504692078,
+  0.7952431440353394
+ ],
+ "grasp|transformer_matched|zeroshot": [
+  0.8865148425102234,
+  0.7514916658401489,
+  0.6439658403396606
+ ],
+ "grasp|transformer_matched|heads": [
+  0.954461395740509,
+  0.8434742093086243,
+  0.7725111246109009
+ ],
+ "grasp|transformer_matched|full": [
+  0.9638881683349609,
+  0.8570102453231812,
+  0.7942851781845093
+ ],
+ "grasp|transformer_matched|scratch": [
+  0.9606439471244812,
+  0.8544439077377319,
+  0.7903960943222046
+ ],
+ "grasp_paired": [
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "1h",
+   "dPE": "+0.0003",
+   "p": "3.60e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "6h",
+   "dPE": "-0.0008",
+   "p": "5.19e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "12h",
+   "dPE": "+0.0052",
+   "p": "3.29e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "1h",
+   "dPE": "-0.0006",
+   "p": "6.89e-03",
+   "n": 10,
+   "p_holm": "2.07e-01"
+  },
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "6h",
+   "dPE": "+0.0014",
+   "p": "6.55e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "12h",
+   "dPE": "-0.0077",
+   "p": "1.57e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "+0.0011",
+   "p": "1.68e-02",
+   "n": 10,
+   "p_holm": "4.54e-01"
+  },
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "-0.0100",
+   "p": "9.35e-03",
+   "n": 10,
+   "p_holm": "2.62e-01"
+  },
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "-0.0221",
+   "p": "4.75e-03",
+   "n": 10,
+   "p_holm": "1.57e-01"
+  },
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.0750",
+   "p": "6.17e-08",
+   "n": 10,
+   "p_holm": "2.53e-06"
+  },
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "+0.0752",
+   "p": "1.66e-05",
+   "n": 10,
+   "p_holm": "6.46e-04"
+  },
+  {
+   "Regime": "zeroshot",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "+0.0945",
+   "p": "5.27e-04",
+   "n": 10,
+   "p_holm": "1.90e-02"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "1h",
+   "dPE": "-0.0013",
+   "p": "3.10e-05",
+   "n": 10,
+   "p_holm": "1.18e-03"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "6h",
+   "dPE": "-0.0009",
+   "p": "5.91e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "12h",
+   "dPE": "-0.0006",
+   "p": "8.07e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "1h",
+   "dPE": "-0.0002",
+   "p": "1.04e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "6h",
+   "dPE": "-0.0006",
+   "p": "6.56e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "12h",
+   "dPE": "+0.0003",
+   "p": "9.09e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "-0.0002",
+   "p": "3.22e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "-0.0009",
+   "p": "6.84e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "+0.0031",
+   "p": "1.06e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.0086",
+   "p": "5.50e-06",
+   "n": 10,
+   "p_holm": "2.20e-04"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "+0.0069",
+   "p": "2.91e-02",
+   "n": 10,
+   "p_holm": "7.56e-01"
+  },
+  {
+   "Regime": "heads",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "+0.0146",
+   "p": "6.59e-03",
+   "n": 10,
+   "p_holm": "2.04e-01"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "1h",
+   "dPE": "-0.0021",
+   "p": "3.36e-09",
+   "n": 10,
+   "p_holm": "1.41e-07"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "6h",
+   "dPE": "-0.0059",
+   "p": "5.56e-03",
+   "n": 10,
+   "p_holm": "1.78e-01"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - STORM, no delay",
+   "Horizon": "12h",
+   "dPE": "-0.0113",
+   "p": "1.42e-03",
+   "n": 10,
+   "p_holm": "4.83e-02"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "1h",
+   "dPE": "-0.0002",
+   "p": "9.15e-02",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "6h",
+   "dPE": "-0.0001",
+   "p": "9.46e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - STORM, no gate",
+   "Horizon": "12h",
+   "dPE": "+0.0016",
+   "p": "3.78e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "-0.0010",
+   "p": "6.95e-05",
+   "n": 10,
+   "p_holm": "2.57e-03"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "-0.0012",
+   "p": "5.53e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "+0.0001",
+   "p": "9.62e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.0002",
+   "p": "5.91e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "+0.0037",
+   "p": "9.41e-02",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "full",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "+0.0077",
+   "p": "9.95e-02",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "scratch",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "1h",
+   "dPE": "-0.0010",
+   "p": "7.07e-04",
+   "n": 10,
+   "p_holm": "2.47e-02"
+  },
+  {
+   "Regime": "scratch",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "6h",
+   "dPE": "+0.0014",
+   "p": "4.48e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "scratch",
+   "Comparison": "STORM-PhysNet - TF + residual",
+   "Horizon": "12h",
+   "dPE": "+0.0039",
+   "p": "3.86e-01",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "scratch",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "1h",
+   "dPE": "+0.0024",
+   "p": "8.92e-03",
+   "n": 10,
+   "p_holm": "2.59e-01"
+  },
+  {
+   "Regime": "scratch",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "6h",
+   "dPE": "+0.0052",
+   "p": "7.88e-02",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  },
+  {
+   "Regime": "scratch",
+   "Comparison": "STORM-PhysNet - TF matched",
+   "Horizon": "12h",
+   "dPE": "+0.0088",
+   "p": "7.08e-02",
+   "n": 10,
+   "p_holm": "1.00e+00"
+  }
+ ]
+}

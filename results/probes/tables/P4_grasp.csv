@@ -1,0 +1,20 @@
+Model,Regime,PE 1h,PE 6h,PE 12h
+Persistence,--,0.951,0.529,0.129
+STORM-PhysNet,zeroshot,0.961,0.827,0.738
+STORM-PhysNet,heads,0.963,0.85,0.787
+STORM-PhysNet,full,0.964,0.861,0.802
+STORM-PhysNet,scratch,0.963,0.86,0.799
+"STORM, no delay",zeroshot,0.961,0.828,0.733
+"STORM, no delay",heads,0.964,0.851,0.788
+"STORM, no delay",full,0.966,0.867,0.813
+"STORM, no gate",zeroshot,0.962,0.825,0.746
+"STORM, no gate",heads,0.963,0.851,0.787
+"STORM, no gate",full,0.964,0.861,0.8
+TF + residual,zeroshot,0.96,0.837,0.761
+TF + residual,heads,0.963,0.851,0.784
+TF + residual,full,0.965,0.862,0.802
+TF + residual,scratch,0.964,0.858,0.795
+TF matched,zeroshot,0.887,0.751,0.644
+TF matched,heads,0.954,0.843,0.773
+TF matched,full,0.964,0.857,0.794
+TF matched,scratch,0.961,0.854,0.79

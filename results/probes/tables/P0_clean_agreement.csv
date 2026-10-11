@@ -1,0 +1,6 @@
+Model,original 1h,original 6h,original 12h,probe runs 1h,probe runs 6h,probe runs 12h
+STORM-PhysNet,0.977,0.865,0.803,0.977,0.865,0.803
+"STORM, no delay",0.978,0.869,0.806,0.978,0.869,0.806
+"STORM, no gate",0.977,0.867,0.805,0.977,0.867,0.805
+TF + residual,0.976,0.872,0.815,0.976,0.872,0.815
+TF matched,0.969,0.867,0.813,0.969,0.867,0.813

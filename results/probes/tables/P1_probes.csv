@@ -1,0 +1,41 @@
+Probe,Model,PE 1h,PE 6h,PE 12h
+clean,STORM-PhysNet,0.977,0.865,0.803
+clean,"STORM, no delay",0.978,0.869,0.806
+clean,"STORM, no gate",0.977,0.867,0.805
+clean,TF + residual,0.976,0.872,0.815
+clean,TF matched,0.969,0.867,0.813
+noise 0.5,STORM-PhysNet,0.975,0.843,0.77
+noise 0.5,"STORM, no delay",0.972,0.834,0.755
+noise 0.5,"STORM, no gate",0.975,0.846,0.774
+noise 0.5,TF + residual,0.969,0.843,0.775
+noise 0.5,TF matched,0.952,0.839,0.783
+noise 1,STORM-PhysNet,0.97,0.782,0.675
+noise 1,"STORM, no delay",0.96,0.74,0.608
+noise 1,"STORM, no gate",0.971,0.788,0.685
+noise 1,TF + residual,0.949,0.757,0.654
+noise 1,TF matched,0.892,0.743,0.675
+noise 2,STORM-PhysNet,0.96,0.637,0.436
+noise 2,"STORM, no delay",0.945,0.569,0.312
+noise 2,"STORM, no gate",0.962,0.646,0.453
+noise 2,TF + residual,0.895,0.554,0.352
+noise 2,TF matched,0.651,0.481,0.391
+drivers missing 6 h,STORM-PhysNet,0.975,0.84,0.769
+drivers missing 6 h,"STORM, no delay",0.975,0.841,0.769
+drivers missing 6 h,"STORM, no gate",0.974,0.841,0.772
+drivers missing 6 h,TF + residual,0.972,0.843,0.775
+drivers missing 6 h,TF matched,0.963,0.836,0.771
+drivers missing 24 h,STORM-PhysNet,0.969,0.757,0.654
+drivers missing 24 h,"STORM, no delay",0.969,0.754,0.65
+drivers missing 24 h,"STORM, no gate",0.969,0.759,0.659
+drivers missing 24 h,TF + residual,0.963,0.747,0.65
+drivers missing 24 h,TF matched,0.941,0.715,0.618
+no drivers,STORM-PhysNet,0.973,0.751,0.656
+no drivers,"STORM, no delay",0.972,0.747,0.653
+no drivers,"STORM, no gate",0.97,0.717,0.622
+no drivers,TF + residual,0.97,0.731,0.614
+no drivers,TF matched,0.961,0.717,0.612
+Kp/Dst 3 h late,STORM-PhysNet,0.977,0.862,0.8
+Kp/Dst 3 h late,"STORM, no delay",0.977,0.865,0.802
+Kp/Dst 3 h late,"STORM, no gate",0.977,0.865,0.803
+Kp/Dst 3 h late,TF + residual,0.975,0.869,0.813
+Kp/Dst 3 h late,TF matched,0.968,0.864,0.811
