@@ -62,7 +62,7 @@ PE is prediction efficiency relative to climatology (1 is perfect). Each value i
 | C: Jan 2012 – Dec 2013 | 12,997 | 354 | −139 nT |
 
 - **Causal inputs.**
-  - Missing GOES hours are forward-filled from earlier hours, never from later ones, and a mask marks the real observations. The one exception is the first 140 hours of the record (March 2010, training data), before any flux is observed, which take the first observed value; this reaches at most 1 h past the origin of a single training window.
+  - Missing GOES hours are forward-filled from earlier hours, never from later ones, and a mask marks the real observations. The first 140 hours of the record (March 2010), before any flux is observed, take the first observed value but fall in no forecast window.
   - A forecast is scored only when its last input hour and all three target hours are observed.
   - Kp uses only completed 3-hour intervals.
 - **Clean splits.** Every hour is labelled train, validation or test. A 72 + 12 h window is used only if all of its hours carry the same label.

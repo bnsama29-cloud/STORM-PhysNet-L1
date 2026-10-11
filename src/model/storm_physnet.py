@@ -106,7 +106,8 @@ class STORMPhysNet(nn.Module):
         )
 
         # ── 2. Input Projection & Positional Encoding ───────────────────────
-        # Concat SW (14 features) and Flux (1 feature) = 15 features total
+        # Concat the n_sw_features auxiliary channels and the flux history (+1); n_sw_features is set
+        # by the trainer from the data (17 in the paper pipeline, so 18 channels in total)
         self.input_proj = nn.Linear(n_sw_features + 1, d_model)
         self.pos_emb = nn.Parameter(torch.randn(1, seq_len, d_model) * 0.02)
         self.emb_dropout = nn.Dropout(dropout)
