@@ -28,7 +28,7 @@ args = ap.parse_args()
 OUT = Path(args.out); (OUT / "tables").mkdir(parents=True, exist_ok=True); (OUT / "figures").mkdir(exist_ok=True)
 H = [1, 6, 12]
 NAMES = {"lstm": "LSTM", "transformer_matched": "Transformer (matched)", "tf_ffn_res": "Transformer + residual head",
-         "tf_flux_only": "Transformer, flux-only", "storm_bz": "STORM-Bz", "storm_no_delay": "STORM, no delay",
+         "tf_flux_only": "Transformer, flux-only", "storm_bz": "STORM-PhysNet", "storm_no_delay": "STORM, no delay",
          "storm_no_gate": "STORM, no gate"}
 ORDER = list(NAMES)
 NUM = {}                                                         # everything that goes in numbers.json
@@ -275,7 +275,7 @@ if "storm_bz" in fam_all and "transformer_matched" in fam_all:
             d = SC[b]["storm_bz"]["pc"][:, i] - SC[b]["transformer_matched"]["pc"][:, i]
             ax[i].bar(j, d.mean(), yerr=d.std(ddof=1) if len(d) > 1 else 0, color=["#1b9e77" if d.mean() > 0 else "#d95f02"][0], capsize=3)
         ax[i].axhline(0, color="k", lw=.8); ax[i].set_xticks(range(len(BLOCKS))); ax[i].set_xticklabels(BLOCKS); ax[i].set_title(f"{h} h"); ax[i].set_xlabel("block")
-    ax[0].set_ylabel(r"$\Delta PE_{clim}$ (STORM-Bz − matched TF)"); fig.tight_layout(); fig.savefig(OUT / "figures/fig_block_delta.png"); plt.close(fig)
+    ax[0].set_ylabel(r"$\Delta PE_{clim}$ (STORM-PhysNet − matched TF)"); fig.tight_layout(); fig.savefig(OUT / "figures/fig_block_delta.png"); plt.close(fig)
 
 if "storm_bz" in fam_all and len(nz_df):
     fig, ax = plt.subplots(1, 3, figsize=(7, 2.3), sharey=True)
@@ -348,7 +348,7 @@ if G and gm:
             for k_, v in enumerate(variants):
                 if (fk, fam, v) in GS:
                     q = GS[(fk, fam, v)][:, 1]; ax[i].bar(j * 5 * w + k_ * w, q.mean(), w, yerr=q.std(ddof=1) if len(q) > 1 else 0, color=plt.cm.viridis(k_ / 3), label=v if (i == 0 and j == 0) else None, capsize=1)
-        ax[i].set_xticks([1.5 * w, 5 * w + 1.5 * w]); ax[i].set_xticklabels(["STORM-Bz", "TF matched"], fontsize=6); ax[i].set_title(f"{fk} (6 h)")
+        ax[i].set_xticks([1.5 * w, 5 * w + 1.5 * w]); ax[i].set_xticklabels(["STORM-PhysNet", "TF matched"], fontsize=6); ax[i].set_title(f"{fk} (6 h)")
     ax[0].set_ylabel(r"$PE_{clim}$"); ax[0].legend(fontsize=5); fig.tight_layout(); fig.savefig(OUT / "figures/fig_grasp.png"); plt.close(fig)
 
 # ------------------------------------------------------------------------------------------------ 10. compute budget + claim checks
