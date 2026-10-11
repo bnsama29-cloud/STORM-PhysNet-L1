@@ -181,6 +181,9 @@ for seed in SEEDS:
                 m, ne, bv = train(m, sets, 1e-4, seed, params)
                 res[f"{fk}_{fam}_{var}"] = predict(m, sets["test"]); info.append((fk, fam, var, ne, bv, n_tr))
             if "scratch" not in VARIANTS[fam]: continue
+            # Note: the model is built before torch.manual_seed(seed), so its initial weights come from the RNG state
+            # left by the preceding runs of this seed. That sequence is fixed, so the paper's scratch runs reproduce
+            # exactly when this script is rerun as is; seeding before build() would give different (equally valid) runs.
             m = build(fam).to(DEV); torch.manual_seed(seed)
             m, ne, bv = train(m, sets, 3e-4, seed, [p for p in m.parameters()])
             res[f"{fk}_{fam}_scratch"] = predict(m, sets["test"]); info.append((fk, fam, "scratch", ne, bv))
