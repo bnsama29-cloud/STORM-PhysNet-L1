@@ -117,7 +117,7 @@ The output matches `results/tables/` exactly.
 
 | Data | Source |
 |---|---|
-| GOES-15 EPEAD >2 MeV electrons | NOAA NCEI, https://www.ngdc.noaa.gov/stp/satellite/goes/ |
+| GOES-15 EPEAD >2 MeV electrons (NOAA reprocessed science data) | NASA CDAWeb, https://cdaweb.gsfc.nasa.gov/ |
 | OMNI hourly solar wind and indices | NASA OMNIWeb, https://omniweb.gsfc.nasa.gov/ |
 | GSAT-19 GRASP | ISSDC PRADAN, https://pradan1.issdc.gov.in/grasp/ |
 

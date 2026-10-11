@@ -82,7 +82,7 @@ class PhysicsInformedLoss(nn.Module):
         log_var:    torch.Tensor,    # [B, H]
     ) -> torch.Tensor:
         """
-        beta-NLL loss (Stirn et al., NeurIPS 2023).
+        beta-NLL loss (Seitzer et al., ICLR 2022).
         Prevents variance branch from hijacking mean prediction gradients.
         beta=0.5 is the theoretically proven optimal value.
 
