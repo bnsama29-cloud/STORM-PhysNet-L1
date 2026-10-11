@@ -68,7 +68,7 @@ class BzPhysicsGate(nn.Module):
         self._init_weights()
 
     def _init_weights(self):
-        # Initialize to produce gate ≈ 0.5 at initialization
+        # Initialisation: with zero input the sigmoid gives 0.25, i.e. gate = 0.1 + 0.9*0.25 = 0.325
         nn.init.xavier_uniform_(self.gate_net[0].weight)
         nn.init.zeros_(self.gate_net[0].bias)
         nn.init.xavier_uniform_(self.gate_net[2].weight)
