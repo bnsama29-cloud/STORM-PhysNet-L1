@@ -6,7 +6,7 @@ This folder trains every model, runs the GRASP transfer experiment, and builds e
 
 | File | Purpose |
 |---|---|
-| `storm_pipeline/data.py` | Causal data pipeline. Missing GOES hours are never filled from later data; inputs are forward-filled and an observed-flux mask is an input channel; Kp is causal (last completed 3-h interval) and rescaled from OMNI's ×10; rows are labelled per split, so no window crosses a boundary; scalers use training rows only. Also defines the three test blocks and the shared validation period. |
+| `storm_pipeline/data.py` | Causal data pipeline. Missing GOES hours are forward-filled from earlier hours (only the record's first 140 h, before any observation, take the first observed value) and an observed-flux mask is an input channel; Kp is causal (last completed 3-h interval) and rescaled from OMNI's ×10; rows are labelled per split, so no window crosses a boundary; scalers use training rows only. Also defines the three test blocks and the shared validation period. |
 | `storm_pipeline/models_extra.py` | Control models: Transformer + residual head, flux-only Transformer |
 | `train_block.py` | Trains every model family and seed for one block (A, B or C), saving test predictions, noise-probe predictions and the delay/gate values. Resumable. |
 | `grasp_transfer.py` | GOES-15 → GSAT-19 GRASP transfer: 3 folds × 4 regimes (zero-shot, heads-only fine-tune, full fine-tune, GRASP-only) × 2 models × 10 seeds |

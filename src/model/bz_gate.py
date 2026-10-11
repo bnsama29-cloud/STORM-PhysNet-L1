@@ -29,6 +29,10 @@ class BzPhysicsGate(nn.Module):
         raw_gate = σ(W · [Bz_south_history, Bz_south_duration] + b)
         gate     = gate_min + (1 - gate_min) * raw_gate
 
+    In the STORM-PhysNet pipeline x_sw is standardised, so Bz_south is the
+    negative part of standardised Bz (not nT), and the duration input is the
+    standardised bz_south_duration feature (hours with Bz < -3 nT).
+
     Parameters
     ----------
     bz_feature_idx : int

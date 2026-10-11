@@ -2,7 +2,7 @@
 STORM-PhysNet data pipeline (causal, leakage-free).
 
   1. Missing GOES hours (fill value or flux<=0) are never interpolated or filled from later data.  Model INPUT
-     channels are forward-filled (past values only) and an explicit `flux_obs` mask channel marks the real hours.
+     channels are forward-filled (past values; only the leading rows before the first observation take that first value) and an explicit `flux_obs` mask channel marks the real hours.
   2. Targets are the raw observed hourly log10 flux.  A window is used (train/val/test) only if the last lookback
      hour and all three target hours (t+1, t+6, t+12) are real observations.
   3. No despiking; only physical-bound clipping.
@@ -58,7 +58,7 @@ def build_features(goes: pd.DataFrame, omni: pd.DataFrame) -> pd.DataFrame:
     df["flux_obs"] = raw_flux.notna().astype(np.float32)
     lf = np.log10(raw_flux.clip(lower=1e-6)).clip(-2.0, 6.0)
     df["flux_raw_log"] = lf                                           # TARGET (NaN where not observed)
-    df["log_flux"] = _ffill_leading(lf)                               # INPUT history (past values only)
+    df["log_flux"] = _ffill_leading(lf)                               # INPUT history (forward-filled; leading prefix = first observation)
     if "flux_std_1h" in df.columns:
         sd = np.log10(df["flux_std_1h"].clip(lower=1e-6)).clip(-2.0, 6.0)
         df["log_flux_std_1h"] = _ffill_leading(sd)
