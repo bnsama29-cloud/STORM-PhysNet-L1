@@ -15,7 +15,7 @@ A Transformer encoder (d_model 128, 2 layers, 4 heads, d_ff 256; 344 k parameter
 
 | Component | What it does |
 |---|---|
-| **Learnable delay** | Shifts the solar-wind inputs by a learned τ ∈ [0.5, 1.5] h per window, to absorb timing error in the upstream data |
+| **Learnable delay stage** | A small network predicts τ ∈ [0.5, 1.5] h per window, and each input hour is replaced by a linear interpolation between hours t−⌊τ⌋ and t−⌊τ⌋+1 with weight τ−⌊τ⌋. As trained, τ sits at 1.5 h, which gives an equal-weight average of hours t−1 and t (a 0.5 h lag with two-point smoothing) |
 | **Bz-conditioned gate** | Scales the encoder output with a gate driven by southward-Bz statistics |
 | **Residual heads** | Three heads (1, 6, 12 h) predict the change from the last observed flux rather than the flux itself |
 
@@ -29,7 +29,7 @@ PE is prediction efficiency relative to climatology (1 is perfect). Each value i
 |---|---:|---:|---:|---:|---:|
 | Persistence | – | 0.968 | 0.581 | 0.261 | 0.00 |
 | LSTM | 55 k | 0.937 | 0.838 | 0.792 | −0.97 |
-| Transformer, architecture-matched | 1.19 M | 0.969 | 0.867 | 0.813 | 0.04 |
+| Transformer, matched in width, depth and heads | 1.19 M | 0.969 | 0.867 | 0.813 | 0.04 |
 | Transformer + residual head | 268 k | 0.976 | **0.872** | **0.815** | 0.25 |
 | Transformer, flux-only | 1.19 M | 0.968 | 0.834 | 0.753 | 0.01 |
 | **STORM-PhysNet** | 344 k | 0.977 | 0.865 | 0.803 | 0.29 |
@@ -39,15 +39,17 @@ PE is prediction efficiency relative to climatology (1 is perfect). Each value i
 **Key findings**
 - **1 h.** STORM-PhysNet beats the matched Transformer in every test period. The gain is +0.008 PE (paired t-test, p = 3.5 × 10⁻¹⁸) and comes from the residual heads.
 - **6–12 h.** All learned models are far above persistence, and the solar-wind inputs add +0.034 and +0.060 PE. STORM-PhysNet ties the matched Transformer at 6 h and trails it by 0.010 at 12 h.
-- **Robustness.** With unit-variance noise on the solar-wind inputs, STORM-PhysNet keeps 1 h PE at **0.970**. The matched Transformer falls to 0.892.
-- **Transfer to GSAT-19 GRASP.** Without retraining, STORM-PhysNet reaches PE 0.961 / 0.827 / 0.738 at 1 / 6 / 12 h. The matched Transformer gets 0.887 / 0.751 / 0.644. After fine-tuning both reach about 0.96 / 0.86 / 0.80.
+- **Robustness to noisy drivers.** With unit-variance noise on the inputs, STORM-PhysNet keeps 1 h PE at **0.970**; the matched Transformer falls to 0.892. The delay stage is responsible: without it, PE drops by 0.010 / 0.043 / 0.067 at 1 / 6 / 12 h (Holm-corrected p < 10⁻⁹). Removing the gate changes nothing.
+- **Missing drivers and index latency.** With no driver data at all, STORM-PhysNet keeps 12 h PE 0.656 (residual Transformer 0.614, matched 0.612), and here the gate helps (+0.034 at 12 h). Kp and Dst arriving 3 h late cost every model at most 0.004.
+- **Transfer to GSAT-19 GRASP.** Without retraining, every persistence-anchored model transfers well (12 h PE 0.733–0.761; STORM-PhysNet 0.961 / 0.827 / 0.738 at 1 / 6 / 12 h). The matched Transformer gets 0.887 / 0.751 / 0.644. After fine-tuning all reach about 0.96 / 0.86 / 0.80.
 
 <p align="center"><img src="results/figures/fig_attribution.png" width="780" alt="Change in PE relative to the matched Transformer"><br>
 <em>Change in PE relative to the matched Transformer. Bars are the mean over test periods; dots are the individual periods.</em></p>
 
 <p align="center"><img src="results/figures/fig_horizon.png" width="780" alt="PE by horizon in each test period"></p>
 
-<p align="center"><img src="results/figures/fig_noise.png" width="620" alt="PE under input noise">&nbsp;<img src="results/figures/fig_grasp_transfer.png" width="340" alt="GRASP transfer"></p>
+<p align="center"><img src="results/probes/figures/fig_probes.png" width="780" alt="PE under driver corruptions"><br>
+<em>PE under driver corruptions: noise, outages, no drivers and late Kp/Dst (seed means averaged over test periods).</em></p>
 
 ## Evaluation protocol
 
@@ -94,6 +96,8 @@ PE is prediction efficiency relative to climatology (1 is perfect). Each value i
 | `T7_noise_*` | Skill under Gaussian input noise |
 | `T8_grasp*` | GRASP transfer results and paired tests |
 | `T9_compute` | Epochs and training time per model |
+| `probes/P0`–`P3` | Driver probes: clean agreement with the main runs, PE under each probe, Holm-corrected paired tests, loss from clean |
+| `probes/P4`–`P5` | GRASP transfer for all five model variants, with Holm-corrected paired tests |
 
 `PAPER_NUMBERS.md` collects every headline number and checks each claim automatically.
 
