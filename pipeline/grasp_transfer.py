@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-GOES -> GRASP (GSAT-19, ~82E) transfer experiment, ONE script, same recipe for STORM-Bz and the matched Transformer.
+GOES -> GRASP (GSAT-19, 48E) transfer experiment, ONE script, same recipe for STORM-Bz and the matched Transformer.
 
 Needs the block-A checkpoints from train_block.py (families storm_bz and transformer_matched, seeds 42..51).
 
