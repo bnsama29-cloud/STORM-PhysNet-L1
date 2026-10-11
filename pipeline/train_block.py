@@ -9,6 +9,13 @@ Outputs in --out:
   preds_<B>_<family>_s<seed>.npz     test predictions (N,3) (+ noisy-input predictions, tau, gate where relevant)
   ckpt_<B>/<family>_s<seed>_best.pt  checkpoints (block A only; needed by grasp_transfer.py)
   runlog_<B>.jsonl                   one line per run: epochs, best val MSE, seconds
+
+Driver-robustness probes (--probes): besides Gaussian noise, each listed family is also scored with
+  pred_out<L>   drivers unavailable for the last L input hours (L = 6, 24: held at their last available value;
+                L = 72: no driver data at all, i.e. every driver at its training mean)
+  pred_lag<L>   Kp and Dst arrive L hours late (each hour sees the value from L hours earlier)
+The flux history, within-hour flux spread and observed-hour mask are never altered by these probes.
+Two processes may share one --out directory (e.g. one per GPU with different --seeds).
 """
 import argparse, contextlib, io, json, os, sys, time, copy
 from pathlib import Path
@@ -27,6 +34,9 @@ ap.add_argument("--epochs", type=int, default=None, help="override config epochs
 ap.add_argument("--max_train_windows", type=int, default=None, help="smoke test only: subsample train windows")
 ap.add_argument("--noise_sigmas", default="0.5,1,2")
 ap.add_argument("--keep_ckpt", default="A", help="blocks whose checkpoints are kept")
+ap.add_argument("--noise_families", default="storm_bz,transformer_matched,tf_ffn_res",
+                help="families that get the noise probe (and the --probes set)")
+ap.add_argument("--probes", action="store_true", help="also run the driver-outage and index-latency probes")
 args = ap.parse_args()
 
 import numpy as np, pandas as pd, torch, yaml
@@ -46,7 +56,10 @@ else:
     SEEDS = [int(s) for s in args.seeds.split(",")]
 FAMILIES = args.families.split(",")
 SIGMAS = [float(s) for s in args.noise_sigmas.split(",") if s]
-NOISE_FAMILIES = {"storm_bz", "transformer_matched", "tf_ffn_res"}
+NOISE_FAMILIES = set(args.noise_families.split(","))
+N_DRV = SW_COLS.index("log_flux_std_1h")                     # channels 0..N_DRV-1 are solar-wind / geomagnetic drivers
+I_KP, I_DST = SW_COLS.index("kp"), SW_COLS.index("dst")
+PROBES = ([("out", 6), ("out", 24), ("out", 72), ("lag", 3)] if args.probes else [])
 
 SPEC = {
     "lstm": dict(model_type="lstm", ablation="none", match=False),
@@ -76,13 +89,16 @@ blk = Block(feat, args.block)
 st = blk.stats(); log(f"rows/windows: {json.dumps(st)}")
 test_set = blk.split(2)
 meta_path = OUT / f"meta_{args.block}.npz"
+TMPTAG = f"{os.getpid()}"                                          # per-process scratch names (two GPUs may share OUT)
 if not meta_path.exists():
     y = np.stack([blk.flux_tg[test_set.starts + 72 + h - 1].numpy() for h in HSTEPS], 1)
     pers = blk.flux_tg[test_set.starts + 71].numpy()
-    np.savez(meta_path, y=y, persist=pers, strict=test_set.strict, storm_in=test_set.window_storm_flags > 0,
+    tmp_meta = OUT / f"meta_{args.block}.{TMPTAG}.tmp.npz"
+    np.savez(tmp_meta, y=y, persist=pers, strict=test_set.strict, storm_in=test_set.window_storm_flags > 0,
              dst_target=test_set.dst_target, t_origin=test_set.t_origin.astype("datetime64[ns]").astype(np.int64),
              scaler_mu=blk.scaler[0], scaler_sd=blk.scaler[1], stats=json.dumps(st),
              block_range=json.dumps(BLOCKS[args.block]), val_range=json.dumps(VAL))
+    os.replace(tmp_meta, meta_path)
     log(f"wrote {meta_path.name}: {len(y)} test windows, {int(test_set.strict.sum())} strict, {int((test_set.dst_target[:, 1] <= -50).sum())} storm@6h")
 
 
@@ -94,14 +110,28 @@ def make_model(family, trainer, n_sw):
     return trainer.build_model(n_sw)
 
 
+def apply_probe(x, probe):
+    """x: (B, T, 17) standardised inputs. Returns a modified copy; only driver channels are touched."""
+    kind, L = probe; x = x.clone(); T = x.shape[1]
+    if kind == "out":
+        if L >= T: x[..., :N_DRV] = 0.0                                          # no driver data: training mean
+        else: x[:, T - L:, :N_DRV] = x[:, T - L - 1:T - L, :N_DRV]                # hold the last available value
+    elif kind == "lag":
+        for i in (I_KP, I_DST):
+            col = x[..., i].clone(); x[:, L:, i] = col[:, :T - L]; x[:, :L, i] = col[:, :1]
+    return x
+
+
 @torch.no_grad()
-def predict(model, loader, sigma=0.0, aux=False):
+def predict(model, loader, sigma=0.0, aux=False, probe=None):
     model.eval(); g = torch.Generator().manual_seed(0); P, T, G = [], [], []
     for b in loader:
         x = b["x_sw"]
         if sigma > 0:
             noise = sigma * torch.randn(x.shape, generator=g); noise[..., -1] = 0.0   # never perturb the observed-mask channel
             x = x + noise
+        if probe is not None:
+            x = apply_probe(x, probe)
         x, xf, yp = x.to(DEV), b["x_flux"].to(DEV), b["y_persist"].to(DEV)
         o = model(x_sw=x, x_flux=xf, y_persist=yp)
         P.append(o["flux_pred"].cpu().numpy())
@@ -122,7 +152,7 @@ for seed in SEEDS:                               # seed-major order so that part
         torch.manual_seed(seed); np.random.seed(seed)
         cfg = copy.deepcopy(base_cfg); s = SPEC[fam]
         cfg["model_type"], cfg["ablation"], cfg["match_storm_capacity"] = s["model_type"], s["ablation"], s["match"]
-        cfg["training"]["checkpoint_dir"] = str(CK); cfg["training"]["log_dir"] = str(OUT / "tb_tmp")
+        cfg["training"]["checkpoint_dir"] = str(CK); cfg["training"]["log_dir"] = str(OUT / f"tb_tmp_{TMPTAG}")
         trainer = Trainer(cfg)
         tr_loader, va_loader, te_loader, tr_ds, va_ds, te_ds = make_loaders(blk, batch_size=cfg["training"]["batch_size"],
                                                                            storm_weight=cfg["training"]["storm_weight"], seed=seed)
@@ -146,7 +176,8 @@ for seed in SEEDS:                               # seed-major order so that part
         if "tau" in res: save["tau"], save["gate"] = res["tau"], res["gate"]
         if fam in NOISE_FAMILIES:
             for sg in SIGMAS: save[f"pred_noise{sg:g}"] = predict(model, te_loader, sigma=sg)["pred"]
-        np.savez(pf, **save)
+            for pr in PROBES: save[f"pred_{pr[0]}{pr[1]}"] = predict(model, te_loader, probe=pr)["pred"]
+        tmp_pf = OUT / f"{pf.stem}.{TMPTAG}.tmp.npz"; np.savez(tmp_pf, **save); os.replace(tmp_pf, pf)
         if args.block not in args.keep_ckpt.split(","):
             (CK / f"{name}_best.pt").unlink(missing_ok=True)
         rec = dict(block=args.block, family=fam, seed=seed, epochs=ep, best_val_mse=min(vals) if vals else None,
@@ -156,5 +187,5 @@ for seed in SEEDS:                               # seed-major order so that part
         del model, trainer
         if DEV.type == "cuda": torch.cuda.empty_cache()
 
-import shutil; shutil.rmtree(OUT / "tb_tmp", ignore_errors=True)
+import shutil; shutil.rmtree(OUT / f"tb_tmp_{TMPTAG}", ignore_errors=True)
 log("BLOCK COMPLETE")

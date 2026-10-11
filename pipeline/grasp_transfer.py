@@ -2,7 +2,9 @@
 """
 GOES -> GRASP (GSAT-19, 48E) transfer experiment, ONE script, same recipe for STORM-Bz and the matched Transformer.
 
-Needs the block-A checkpoints from train_block.py (families storm_bz and transformer_matched, seeds 42..51).
+Needs the block-A checkpoints from train_block.py for every family in --families (default storm_bz and
+transformer_matched, seeds 42..51). Optional families: tf_ffn_res (residual-head Transformer, all four regimes) and
+storm_no_delay / storm_no_gate (zero-shot, heads-only and full fine-tuning).
 
   python grasp_transfer.py --repo /kaggle/working/STORM-PhysNet-L1 --ckpt_dir out_A/ckpt_A --meta out_A/meta_A.npz --out out_G
 
@@ -29,12 +31,14 @@ ap.add_argument("--repo", required=True); ap.add_argument("--ckpt_dir", required
 ap.add_argument("--out", required=True); ap.add_argument("--seeds", default="42-51")
 ap.add_argument("--epochs", type=int, default=30); ap.add_argument("--patience", type=int, default=8)
 ap.add_argument("--max_windows", type=int, default=None, help="smoke test only")
+ap.add_argument("--families", default="storm_bz,transformer_matched")
 args = ap.parse_args()
 
 import numpy as np, pandas as pd, torch, torch.nn as nn, yaml
 from types import SimpleNamespace
 from torch.utils.data import DataLoader
 from storm_pipeline.data import SW_COLS, SCALED, SEQ, HSTEPS, valid_starts, WindowSet
+from storm_pipeline.models_extra import FFNResTransformer
 
 REPO = Path(args.repo).resolve(); sys.path.insert(0, str(REPO))
 from src.data.cdf_reader import read_grasp_directory, read_wind_directory
@@ -98,13 +102,18 @@ for fk, sets in FD.items():
     fold_meta[f"{fk}_strict"] = t.strict; fold_meta[f"{fk}_storm_in"] = t.window_storm_flags > 0
     fold_meta[f"{fk}_dst"] = t.dst_target; fold_meta[f"{fk}_t"] = t.t_origin.astype("datetime64[ns]").astype(np.int64)
     log(f"{fk}: windows train/val/test = {len(sets['train'])}/{len(sets['val'])}/{len(sets['test'])}; test windows w/ storm hour in lookback={int((t.window_storm_flags>0).sum())}")
-np.savez(OUT / "grasp_meta.npz", **fold_meta)
+TMPTAG = str(os.getpid())                                            # two processes (one per GPU) may share OUT
+np.savez(OUT / f"grasp_meta.{TMPTAG}.tmp.npz", **fold_meta); os.replace(OUT / f"grasp_meta.{TMPTAG}.tmp.npz", OUT / "grasp_meta.npz")
+FAMS = args.families.split(",")
+ABL = {"storm_bz": "none", "storm_no_delay": "no_delay", "storm_no_gate": "no_bz_gate"}
+VARIANTS = {f: (["heads", "full"] if f in ("storm_no_delay", "storm_no_gate") else ["heads", "full", "scratch"]) for f in FAMS}
 
 # ---------------------------------------------------------------------------------------------- models
 cfg = yaml.safe_load(open(REPO / "configs/config.yaml"))
 def build(fam):
-    c = copy.deepcopy(cfg); c["training"]["checkpoint_dir"] = str(OUT / "tmp"); c["training"]["log_dir"] = str(OUT / "tb_tmp")
-    c["model_type"] = "storm_physnet" if fam == "storm_bz" else "transformer"; c["ablation"] = "none"
+    if fam == "tf_ffn_res": return FFNResTransformer(len(SW_COLS)).to(DEV)
+    c = copy.deepcopy(cfg); c["training"]["checkpoint_dir"] = str(OUT / f"tmp_{TMPTAG}"); c["training"]["log_dir"] = str(OUT / f"tb_tmp_{TMPTAG}")
+    c["model_type"] = "storm_physnet" if fam in ABL else "transformer"; c["ablation"] = ABL.get(fam, "none")
     c["match_storm_capacity"] = fam == "transformer_matched"
     tr = Trainer(c); m = tr.build_model(len(SW_COLS)); tr.writer.close(); return m
 
@@ -113,7 +122,7 @@ def load_pre(fam, seed):
     m.load_state_dict(sdict); return m
 
 def freeze_heads_only(m, fam):
-    if fam == "storm_bz":
+    if fam in ABL:
         m.freeze_encoder()
         if hasattr(m, "pos_emb") and isinstance(m.pos_emb, torch.nn.Parameter): m.pos_emb.requires_grad = False   # freeze_encoder leaves it trainable
     else:
@@ -161,21 +170,22 @@ for seed in SEEDS:
     if pf.exists(): continue
     t0 = time.time(); res = {}; info = []
     for fk, sets in FD.items():
-        for fam in ["storm_bz", "transformer_matched"]:
+        for fam in FAMS:
             m = load_pre(fam, seed)
             res[f"{fk}_{fam}_zeroshot"] = predict(m, sets["test"])
-            for var in ["heads", "full"]:
+            for var in [v for v in VARIANTS[fam] if v != "scratch"]:
                 m = load_pre(fam, seed)
                 if var == "heads": freeze_heads_only(m, fam)
                 params = [p for p in m.parameters() if p.requires_grad]
                 n_tr = int(sum(p.numel() for p in params))
                 m, ne, bv = train(m, sets, 1e-4, seed, params)
                 res[f"{fk}_{fam}_{var}"] = predict(m, sets["test"]); info.append((fk, fam, var, ne, bv, n_tr))
+            if "scratch" not in VARIANTS[fam]: continue
             m = build(fam).to(DEV); torch.manual_seed(seed)
             m, ne, bv = train(m, sets, 3e-4, seed, [p for p in m.parameters()])
             res[f"{fk}_{fam}_scratch"] = predict(m, sets["test"]); info.append((fk, fam, "scratch", ne, bv))
-    np.savez(pf, **res)
+    np.savez(OUT / f"{pf.stem}.{TMPTAG}.tmp.npz", **res); os.replace(OUT / f"{pf.stem}.{TMPTAG}.tmp.npz", pf)
     with open(OUT / "grasp_runlog.jsonl", "a") as fh: fh.write(json.dumps(dict(seed=seed, seconds=round(time.time() - t0, 1), runs=info)) + "\n")
     log(f"seed {seed} done in {time.time()-t0:.0f}s")
-import shutil; shutil.rmtree(OUT / "tmp", ignore_errors=True); shutil.rmtree(OUT / "tb_tmp", ignore_errors=True)
+import shutil; shutil.rmtree(OUT / f"tmp_{TMPTAG}", ignore_errors=True); shutil.rmtree(OUT / f"tb_tmp_{TMPTAG}", ignore_errors=True)
 log("GRASP COMPLETE")
