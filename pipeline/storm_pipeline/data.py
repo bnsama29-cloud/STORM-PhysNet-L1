@@ -1,7 +1,7 @@
 """
 STORM-PhysNet data pipeline (causal, leakage-free).
 
-  1. Missing GOES hours (NOAA quality flag or flux<=0) are never interpolated or filled from later data.  Model INPUT
+  1. Missing GOES hours (fill value or flux<=0) are never interpolated or filled from later data.  Model INPUT
      channels are forward-filled (past values only) and an explicit `flux_obs` mask channel marks the real hours.
   2. Targets are the raw observed hourly log10 flux.  A window is used (train/val/test) only if the last lookback
      hour and all three target hours (t+1, t+6, t+12) are real observations.
