@@ -1,18 +1,14 @@
 """
 Bz Physics Gate.
 
-A soft gating mechanism that amplifies the encoder's output when IMF Bz
-is strongly southward (indicating active magnetospheric driving).
+A learned soft gate g = 0.1 + 0.9 * sigmoid(MLP(.)) in [0.1, 1]^d_model that scales
+the encoder output. Its three inputs are the mean and maximum of the negative part of
+the Bz input over the window and the latest southward-Bz-duration feature.
 
-Physics basis: Reconnection rate ∝ |Bz| when Bz < 0 (Dungey cycle).
-Sustained southward Bz drives convection, particle injection, and
-outer radiation belt electron acceleration.
-
-When Bz << 0: gate → 1.0 (full signal passes through)
-When Bz >> 0: gate → small value (quiet time, weaker modulation)
-
-This directly connects to Stage 1 of STORM-PhysNet: the gate provides
-a physics-driven attention signal for storm detection.
+In the STORM-PhysNet pipeline these inputs are standardised (not nT); bz_south_duration
+itself counts hours with physical Bz < -3 nT before scaling. The design motivation is
+that sustained southward Bz drives magnetospheric activity (Dungey cycle), but the gate
+learns its own mapping: it is not constrained to rise monotonically with southward Bz.
 """
 
 import torch
