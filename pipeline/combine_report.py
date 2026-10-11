@@ -246,11 +246,17 @@ if "storm_bz" in fam_all:
                     aucs.append(stats.mannwhitneyu(gs[ss], gs[~ss]).statistic / (ss.sum() * (~ss).sum()))
         if aucs: gd["gate_AUC_storm_vs_quiet_mean"] = float(np.mean(aucs)); gd["gate_AUC_sd"] = float(np.std(aucs)); gd["gate_AUC_n"] = len(aucs)
         NUM["gate_delay"] = gd
-        fig, ax = plt.subplots(1, 2, figsize=(7, 2.4))
-        ax[0].hist(tau, bins=40, color=COL["storm_bz"]); ax[0].set_xlabel(r"learned delay $\tau$ (h)"); ax[0].set_ylabel("windows × seeds")
-        ax[1].hist(gate[~storm], bins=40, alpha=.6, density=True, label="non-storm", color="#888");
-        if storm.any(): ax[1].hist(gate[storm], bins=40, alpha=.6, density=True, label="storm (Dst≤−50)", color="#d95f02")
-        ax[1].set_xlabel("Bz-gate activation"); ax[1].legend(); fig.tight_layout(); fig.savefig(OUT / "figures/fig_gate_delay.png"); plt.close(fig)
+        # column-width figure as in the paper (Fig. 7): tau as % of windows, gate densities for storm (Dst<=-50 nT at 1 h) vs quiet
+        with plt.rc_context({"font.size": 8, "xtick.labelsize": 7, "ytick.labelsize": 7, "legend.fontsize": 7}):
+            fig, ax = plt.subplots(1, 2, figsize=(3.5, 1.7))
+            ax[0].hist(tau, bins=np.linspace(0.5, 1.5, 41), weights=np.full(tau.shape, 100 / tau.size), color=COL["storm_bz"])
+            ax[0].set_xlim(0.5, 1.52); ax[0].set_xlabel(r"learned delay $\tau$ (h)"); ax[0].set_ylabel("windows (%)")
+            gb = np.linspace(min(gate.min(), .34), max(gate.max(), .5), 36)
+            ax[1].hist(gate[~storm], bins=gb, alpha=.6, density=True, label="quiet", color="#888")
+            if storm.any(): ax[1].hist(gate[storm], bins=gb, alpha=.6, density=True, label="storm", color="#d95f02")
+            ax[1].set_xlabel("gate activation"); ax[1].set_ylabel("density"); ax[1].legend(frameon=False, loc="upper left", handlelength=1)
+            for a in ax: a.grid(alpha=.3, lw=.5)
+            fig.tight_layout(pad=0.3, w_pad=0.8); fig.savefig(OUT / "figures/fig_gate_delay.png", dpi=400); plt.close(fig)
 
 # ------------------------------------------------------------------------------------------------ 8. figures: horizon, blocks, case study
 fig, ax = plt.subplots(1, 3, figsize=(7, 2.4), sharey=False)

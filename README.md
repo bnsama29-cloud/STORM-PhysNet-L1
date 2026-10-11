@@ -16,7 +16,7 @@ A Transformer encoder (d_model 128, 2 layers, 4 heads, d_ff 256; 344 k parameter
 | Component | What it does |
 |---|---|
 | **Learnable delay stage** | A small network predicts τ ∈ [0.5, 1.5] h per window, and each input hour is replaced by a linear interpolation between hours t−⌊τ⌋ and t−⌊τ⌋+1 with weight τ−⌊τ⌋. As trained, τ sits at 1.5 h, which gives an equal-weight average of hours t−1 and t (a 0.5 h lag with two-point smoothing) |
-| **Bz-conditioned gate** | Scales the encoder output with a gate driven by southward-Bz statistics |
+| **Bz-conditioned gate** | Scales the encoder output by g = 0.1 + 0.9·sigmoid(MLP), fed the mean and max negative part of standardised Bz and the latest southward-Bz duration |
 | **Residual heads** | Three heads (1, 6, 12 h) predict the change from the last observed flux rather than the flux itself |
 
 Training uses a β-NLL loss with a 2.5× penalty on storm-time under-prediction, AdamW with cosine decay, and storm windows oversampled ×12. It stops early on the 12 h validation error.
@@ -29,7 +29,7 @@ PE is prediction efficiency relative to climatology (1 is perfect). Each value i
 |---|---:|---:|---:|---:|---:|
 | Persistence | – | 0.968 | 0.581 | 0.261 | 0.00 |
 | LSTM | 55 k | 0.937 | 0.838 | 0.792 | −0.97 |
-| Transformer, matched in width, depth and heads | 1.19 M | 0.969 | 0.867 | 0.813 | 0.04 |
+| Transformer, matched in model dimension, depth and heads | 1.19 M | 0.969 | 0.867 | 0.813 | 0.04 |
 | Transformer + residual head | 268 k | 0.976 | **0.872** | **0.815** | 0.25 |
 | Transformer, flux-only | 1.19 M | 0.968 | 0.834 | 0.753 | 0.01 |
 | **STORM-PhysNet** | 344 k | 0.977 | 0.865 | 0.803 | 0.29 |
@@ -62,7 +62,7 @@ PE is prediction efficiency relative to climatology (1 is perfect). Each value i
 | C: Jan 2012 – Dec 2013 | 12,997 | 354 | −139 nT |
 
 - **Causal inputs.**
-  - Missing GOES hours are never filled from later data. Inputs are only forward-filled, and a mask marks the real observations.
+  - Missing GOES hours are forward-filled from earlier hours, never from later ones, and a mask marks the real observations. The one exception is the first 140 hours of the record (March 2010, training data), before any flux is observed, which take the first observed value; this reaches at most 1 h past the origin of a single training window.
   - A forecast is scored only when its last input hour and all three target hours are observed.
   - Kp uses only completed 3-hour intervals.
 - **Clean splits.** Every hour is labelled train, validation or test. A 72 + 12 h window is used only if all of its hours carry the same label.
