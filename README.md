@@ -142,3 +142,7 @@ Follow each provider's terms of use.
 ## License
 
 Code is released under the MIT License (see `LICENSE`).
+
+## Use of generative AI
+
+Anthropic's Claude (Claude Sonnet 5.5 and Claude Opus 5.5, via the Claude and Claude Code applications) generated and revised text in the accompanying manuscript, wrote the analysis, plotting and table-generation code and the experiment scripts in this repository, and was used to cross-check reported numbers against the result files. The authors reviewed and verified the content and take full responsibility for it.
