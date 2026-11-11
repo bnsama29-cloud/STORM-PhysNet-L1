@@ -38,3 +38,7 @@ ieee_paper/
 
 # prediction archives are tracked
 !predictions/*.zip
+
+# Local tool state and training logs
+.clawness/
+logs/

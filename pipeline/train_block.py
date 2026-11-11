@@ -41,7 +41,7 @@ args = ap.parse_args()
 
 import numpy as np, pandas as pd, torch, yaml
 from storm_pipeline.data import (build_features, Block, make_loaders, load_raw, SW_COLS, HSTEPS, BLOCKS, VAL)
-from storm_pipeline.models_extra import FFNResTransformer, FluxOnly
+from storm_pipeline.models_extra import FFNResTransformer, FluxOnly, FixedTwoPointAverage, SmoothedInput
 
 REPO = Path(args.repo).resolve()
 OUT = Path(args.out); OUT.mkdir(parents=True, exist_ok=True)
@@ -69,6 +69,9 @@ SPEC = {
     "storm_bz": dict(model_type="storm_physnet", ablation="none", match=False),
     "storm_no_delay": dict(model_type="storm_physnet", ablation="no_delay", match=False),
     "storm_no_gate": dict(model_type="storm_physnet", ablation="no_bz_gate", match=False),
+    # reviewer controls (AGERS 2026): the learned delay replaced by a fixed, non-learned two-point average
+    "storm_fixed_ma": dict(model_type="storm_physnet", ablation="none", match=False),
+    "tf_res_fixed_ma": dict(model_type="transformer", ablation="none", match=True),  # model built separately
 }
 for f in FAMILIES:
     assert f in SPEC, f"unknown family {f}"
@@ -107,6 +110,10 @@ def make_model(family, trainer, n_sw):
         return FFNResTransformer(n_sw).to(DEV)
     if family == "tf_flux_only":
         return FluxOnly(trainer.build_model(n_sw)).to(DEV)
+    if family == "tf_res_fixed_ma":
+        return SmoothedInput(FFNResTransformer(n_sw)).to(DEV)
+    if family == "storm_fixed_ma":
+        m = trainer.build_model(n_sw); m.prop_delay = FixedTwoPointAverage().to(DEV); return m
     return trainer.build_model(n_sw)
 
 
