@@ -70,6 +70,11 @@ PE is prediction efficiency relative to climatology (1 is perfect). Each value i
 - **Statistics.** Ten seeds (42–51) per model. Comparisons use paired t-tests with Cohen's d_z, and bagged ensembles get 7-day block-bootstrap intervals.
 - **GRASP.** The record runs from Jul 2017 to Aug 2018. It is split into three chronological folds, each tested with zero-shot use, heads-only fine-tuning, full fine-tuning and training on GRASP alone.
 
+## Camera-ready additions (AGERS 2026 reviews)
+
+- **Fixed-average controls.** `storm_fixed_ma` (STORM-PhysNet with the learned delay replaced by a fixed average of hours t-1 and t) and `tf_res_fixed_ma` (residual Transformer with the same average), trained with 10 seeds in each block, with all probes (`pipeline/train_block.py`, tests in `tests/test_fixed_ma.py`). Predictions: `predictions/preds_fixed_ma_control.zip`. The fixed average matches the learned delay on clean and noisy inputs; the residual Transformer plus the fixed average is the most robust model at 6-12 h under input noise.
+- **Stricter statistics.** `pipeline/camera_ready_stats.py`: paired t-tests on the ten seed means (Holm-corrected), per-block tests with Bonferroni correction, and a mixed model for the 1 h claim. `pipeline/fixed_ma_stats.py` covers the controls. Outputs: `results/camera_ready/`.
+
 ## Repository structure
 
 ```
