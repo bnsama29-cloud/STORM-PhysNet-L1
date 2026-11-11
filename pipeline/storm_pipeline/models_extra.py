@@ -43,3 +43,38 @@ class FluxOnly(nn.Module):
 
     def forward(self, x_sw, x_flux, y_persist=None, **kw):
         return self.inner(x_sw * self.mask, x_flux, y_persist=y_persist)
+
+
+class FixedTwoPointAverage(nn.Module):
+    """Non-learned replacement for STORM-PhysNet's delay stage (reviewer control, AGERS 2026).
+
+    Reproduces exactly what the learned stage computes at its saturated value tau = 1.5 h: the output at hour t is the
+    equal-weight average of hours t-1 and t (hour 0 averages hours 0 and 1, as in the learned stage). No parameters.
+    Same interface as src.model.propagation_delay.AdaptivePropagationDelay."""
+
+    TAU = 1.5
+
+    def forward(self, x):
+        B, T, F = x.shape
+        idx = torch.arange(T, device=x.device)
+        lo = (idx - 1).clamp(0, T - 1); hi = (lo + 1).clamp(0, T - 1)
+        tau = torch.full((B, 1), self.TAU, device=x.device, dtype=x.dtype)
+        return 0.5 * (x[:, lo] + x[:, hi]), tau
+
+    @property
+    def tau(self):
+        return torch.tensor(self.TAU)
+
+    def regularization_loss(self):
+        return torch.zeros(())
+
+
+class SmoothedInput(nn.Module):
+    """Apply FixedTwoPointAverage to all auxiliary channels (x_sw) before an inner model, as STORM-PhysNet does."""
+
+    def __init__(self, inner):
+        super().__init__(); self.inner = inner; self.smooth = FixedTwoPointAverage()
+
+    def forward(self, x_sw, x_flux, y_persist=None, **kw):
+        xs, _ = self.smooth(torch.nan_to_num(x_sw))
+        return self.inner(xs, x_flux, y_persist=y_persist)
