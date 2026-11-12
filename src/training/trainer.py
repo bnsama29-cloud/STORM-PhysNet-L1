@@ -153,6 +153,7 @@ class Trainer:
             base_weights = LossWeights(
                 horizon_weights=hw,
                 physics_horizon_scale=phs,
+                horizon_hours=[float(h) for h in self.cfg["data"]["forecast_horizons"]],
                 lambda_dst=0, lambda_kp=0, lambda_storm_cls=0,
                 lambda_mono=0, lambda_bz=0, lambda_smooth=0, lambda_delay=0,
                 lambda_var=0, lambda_epsilon=0
@@ -161,6 +162,7 @@ class Trainer:
             base_weights = LossWeights(
                 horizon_weights=hw,
                 physics_horizon_scale=phs,
+                horizon_hours=[float(h) for h in self.cfg["data"]["forecast_horizons"]],
                 lambda_dst       = 0.05,                        # Dst auxiliary task
                 lambda_kp        = 0.05,                        # Kp auxiliary task
                 lambda_storm_cls = 0.10,                        # storm classification

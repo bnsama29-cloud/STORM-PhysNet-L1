@@ -31,6 +31,8 @@ class LossWeights:
     horizon_weights:  list = None  # [1.0, 0.7, 0.5] for [1h, 6h, 12h]
     # NEW: scale physics constraints per horizon (Week 1: physics hurts 6h/12h)
     physics_horizon_scale: list = None  # e.g. [1.0, 0.0, 0.0]
+    # Lead time of each horizon in hours (used by the monotonicity bound)
+    horizon_hours: list = None  # default [1.0, 6.0, 12.0]
     # Auxiliary task weights
     lambda_dst:       float = 0.10
     lambda_kp:        float = 0.05
@@ -52,6 +54,8 @@ class LossWeights:
         if self.physics_horizon_scale is None:
             # Default after Week 1: physics only on short head
             self.physics_horizon_scale = [1.0, 0.0, 0.0]
+        if self.horizon_hours is None:
+            self.horizon_hours = [1.0, 6.0, 12.0]
 
 
 class PhysicsInformedLoss(nn.Module):
@@ -69,6 +73,7 @@ class PhysicsInformedLoss(nn.Module):
         self.register_buffer("horizon_weights", hw / hw.sum())
         phs = torch.tensor(self.w.physics_horizon_scale, dtype=torch.float32)
         self.register_buffer("physics_horizon_scale", phs)
+        self.register_buffer("horizon_hours", torch.tensor(self.w.horizon_hours, dtype=torch.float32))
 
     # ──────────────────────────────────────────────────────────────────────────
     # Primary Loss
@@ -219,7 +224,8 @@ class PhysicsInformedLoss(nn.Module):
         max_rate = max_rate.clamp(0.01, 2.0)                # [B]
 
         # Violation: predicted correction exceeds max rate per horizon
-        horizons = torch.tensor([1.0, 6.0, 12.0], device=flux_residual.device)
+        horizons = self.horizon_hours.to(flux_residual.device)
+        assert horizons.numel() == flux_residual.size(1), "horizon_hours must have one entry per forecast horizon"
         max_per_horizon = max_rate.unsqueeze(1) * horizons.unsqueeze(0)  # [B,H]
         violation = F.relu(flux_residual.abs() - max_per_horizon)
         return violation.mean()
