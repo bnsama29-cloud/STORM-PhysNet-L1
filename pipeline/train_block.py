@@ -6,7 +6,8 @@ Train all model families for ONE block (A, B or C) with the STORM-PhysNet pipeli
 
 Outputs in --out:
   meta_<B>.npz                       targets, persistence, flags, times, scaler for the block's test windows
-  preds_<B>_<family>_s<seed>.npz     test predictions (N,3) (+ noisy-input predictions, tau, gate where relevant)
+  preds_<B>_<family>_s<seed>.npz     test predictions (N,H) (+ noisy-input predictions, tau, gate where relevant;
+                                     + logvar, the predicted log-variance, for the STORM-PhysNet families)
   ckpt_<B>/<family>_s<seed>_best.pt  checkpoints (block A only; needed by grasp_transfer.py)
   runlog_<B>.jsonl                   one line per run: epochs, best val MSE, seconds
 
@@ -37,7 +38,9 @@ ap.add_argument("--keep_ckpt", default="A", help="blocks whose checkpoints are k
 ap.add_argument("--noise_families", default="storm_bz,transformer_matched,tf_ffn_res",
                 help="families that get the noise probe (and the --probes set)")
 ap.add_argument("--probes", action="store_true", help="also run the driver-outage and index-latency probes")
+ap.add_argument("--horizons", default="1,6,12", help="forecast horizons in hours; 1,6,12 reproduces the AGERS 2026 runs")
 args = ap.parse_args()
+os.environ["STORM_HSTEPS"] = args.horizons          # read by storm_pipeline.data at import time
 
 import numpy as np, pandas as pd, torch, yaml
 from storm_pipeline.data import (build_features, Block, make_loaders, load_raw, SW_COLS, HSTEPS, BLOCKS, VAL)
@@ -78,6 +81,11 @@ for f in FAMILIES:
 
 base_cfg = yaml.safe_load(open(REPO / "configs/config.yaml"))
 if args.epochs: base_cfg["training"]["epochs"] = args.epochs
+H_WEIGHT = {1: 1.0, 6: 0.7, 12: 0.5, 24: 0.4}                      # loss weight per horizon (1/6/12 as in the paper)
+assert all(h in H_WEIGHT for h in HSTEPS), f"no loss weight defined for horizons {HSTEPS}"
+base_cfg["data"]["forecast_horizons"] = [float(h) for h in HSTEPS]
+base_cfg["training"]["horizon_weights"] = [H_WEIGHT[h] for h in HSTEPS]
+base_cfg["loss"]["physics_horizon_scale"] = [1.0] + [0.0] * (len(HSTEPS) - 1)
 
 
 def log(msg):
@@ -85,7 +93,7 @@ def log(msg):
 
 
 # ----------------------------------------------------------------------------------------------- data
-log(f"device={DEV}  block={args.block}  families={FAMILIES}  seeds={SEEDS[0]}..{SEEDS[-1]}")
+log(f"device={DEV}  block={args.block}  horizons={HSTEPS}  families={FAMILIES}  seeds={SEEDS[0]}..{SEEDS[-1]}")
 goes, omni = load_raw(str(REPO))
 feat = build_features(goes, omni)
 blk = Block(feat, args.block)
@@ -100,18 +108,18 @@ if not meta_path.exists():
     np.savez(tmp_meta, y=y, persist=pers, strict=test_set.strict, storm_in=test_set.window_storm_flags > 0,
              dst_target=test_set.dst_target, t_origin=test_set.t_origin.astype("datetime64[ns]").astype(np.int64),
              scaler_mu=blk.scaler[0], scaler_sd=blk.scaler[1], stats=json.dumps(st),
-             block_range=json.dumps(BLOCKS[args.block]), val_range=json.dumps(VAL))
+             block_range=json.dumps(BLOCKS[args.block]), val_range=json.dumps(VAL), horizons=np.array(HSTEPS))
     os.replace(tmp_meta, meta_path)
     log(f"wrote {meta_path.name}: {len(y)} test windows, {int(test_set.strict.sum())} strict, {int((test_set.dst_target[:, 1] <= -50).sum())} storm@6h")
 
 
 def make_model(family, trainer, n_sw):
     if family == "tf_ffn_res":
-        return FFNResTransformer(n_sw).to(DEV)
+        return FFNResTransformer(n_sw, n_h=len(HSTEPS)).to(DEV)
     if family == "tf_flux_only":
         return FluxOnly(trainer.build_model(n_sw)).to(DEV)
     if family == "tf_res_fixed_ma":
-        return SmoothedInput(FFNResTransformer(n_sw)).to(DEV)
+        return SmoothedInput(FFNResTransformer(n_sw, n_h=len(HSTEPS))).to(DEV)
     if family == "storm_fixed_ma":
         m = trainer.build_model(n_sw); m.prop_delay = FixedTwoPointAverage().to(DEV); return m
     return trainer.build_model(n_sw)
@@ -130,8 +138,8 @@ def apply_probe(x, probe):
 
 
 @torch.no_grad()
-def predict(model, loader, sigma=0.0, aux=False, probe=None):
-    model.eval(); g = torch.Generator().manual_seed(0); P, T, G = [], [], []
+def predict(model, loader, sigma=0.0, aux=False, probe=None, logvar=False):
+    model.eval(); g = torch.Generator().manual_seed(0); P, T, G, LV = [], [], [], []
     for b in loader:
         x = b["x_sw"]
         if sigma > 0:
@@ -142,9 +150,11 @@ def predict(model, loader, sigma=0.0, aux=False, probe=None):
         x, xf, yp = x.to(DEV), b["x_flux"].to(DEV), b["y_persist"].to(DEV)
         o = model(x_sw=x, x_flux=xf, y_persist=yp)
         P.append(o["flux_pred"].cpu().numpy())
+        if logvar: LV.append(o["log_var"].cpu().numpy())
         if aux and "tau" in o:
             T.append(o["tau"].reshape(len(x), -1).mean(1).cpu().numpy()); G.append(o["gate_values"].reshape(len(x), -1).mean(1).cpu().numpy())
     out = {"pred": np.concatenate(P).astype(np.float32)}
+    if logvar: out["logvar"] = np.concatenate(LV).astype(np.float32)
     if aux and T: out["tau"] = np.concatenate(T).astype(np.float32); out["gate"] = np.concatenate(G).astype(np.float32)
     return out
 
@@ -178,8 +188,9 @@ for seed in SEEDS:                               # seed-major order so that part
         txt = buf.getvalue()
         ep = txt.count("Epoch ") ; vals = [float(l.split("Val MSE:")[1].split("|")[0]) for l in txt.splitlines() if "Val MSE:" in l]
         trainer.writer.close()
-        res = predict(model, te_loader, aux=(fam == "storm_bz"))
+        res = predict(model, te_loader, aux=(fam == "storm_bz"), logvar=(SPEC[fam]["model_type"] == "storm_physnet"))
         save = {"pred": res["pred"]}
+        if "logvar" in res: save["logvar"] = res["logvar"]
         if "tau" in res: save["tau"], save["gate"] = res["tau"], res["gate"]
         if fam in NOISE_FAMILIES:
             for sg in SIGMAS: save[f"pred_noise{sg:g}"] = predict(model, te_loader, sigma=sg)["pred"]

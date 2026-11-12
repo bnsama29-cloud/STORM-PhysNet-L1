@@ -4,7 +4,9 @@ STORM-PhysNet data pipeline (causal, leakage-free).
   1. Missing GOES hours (fill value or flux<=0) are never interpolated or filled from later data.  Model INPUT
      channels are forward-filled (past values; only the leading rows before the first observation take that first value) and an explicit `flux_obs` mask channel marks the real hours.
   2. Targets are the raw observed hourly log10 flux.  A window is used (train/val/test) only if the last lookback
-     hour and all three target hours (t+1, t+6, t+12) are real observations.
+     hour and every target hour (default t+1, t+6, t+12) are real observations.
+     The horizons can be changed with the environment variable STORM_HSTEPS (e.g. "1,6,12,24"), set BEFORE this
+     module is imported; the default reproduces the AGERS 2026 results exactly.
   3. No despiking; only physical-bound clipping.
   4. OMNI Kp is stored x10 (0..90).  It is divided by 10 and made causal: each hour only sees the last Kp 3-h
      interval that has already finished (OMNI repeats the interval's final value on all 3 hours).
@@ -20,8 +22,9 @@ import numpy as np, pandas as pd, torch
 from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 
 SEQ = 72
-HSTEPS = (1, 6, 12)
-SPAN = SEQ + max(HSTEPS)          # 84 rows needed per window
+HSTEPS = tuple(int(h) for h in os.environ.get("STORM_HSTEPS", "1,6,12").split(","))
+assert len(HSTEPS) >= 1 and all(h >= 1 for h in HSTEPS) and list(HSTEPS) == sorted(set(HSTEPS)), f"bad STORM_HSTEPS {HSTEPS}"
+SPAN = SEQ + max(HSTEPS)          # rows needed per window (84 for the default horizons)
 SW_COLS = ["vsw", "bz", "bt", "density", "pdyn", "bz_south_duration", "storm_onset_hours",
            "vsw_roll1h", "vsw_roll6h", "vsw_roll24h", "bz_roll1h", "bz_roll6h", "bz_x_vsw", "kp", "dst",
            "log_flux_std_1h", "flux_obs"]
@@ -96,12 +99,14 @@ def label_rows(index: pd.DatetimeIndex, block: str) -> np.ndarray:
 
 
 def valid_starts(lab: np.ndarray, obs: np.ndarray):
-    """Window starts s (0-based) whose 84 rows share one label and whose last-lookback and 3 target rows are observed."""
+    """Window starts s (0-based) whose SPAN rows share one label and whose last-lookback and target rows are observed."""
     n = len(lab); starts = np.arange(0, n - SPAN + 1)
     lab_s = pd.Series(lab.astype(np.int8))
     mn = lab_s.rolling(SPAN).min().values[SPAN - 1:]; mx = lab_s.rolling(SPAN).max().values[SPAN - 1:]
     same = mn == mx
-    ok = same & (obs[starts + SEQ - 1] > 0) & (obs[starts + SEQ] > 0) & (obs[starts + SEQ + 5] > 0) & (obs[starts + SEQ + 11] > 0)
+    ok = same & (obs[starts + SEQ - 1] > 0)
+    for h in HSTEPS:
+        ok &= obs[starts + SEQ + h - 1] > 0
     return starts[ok], lab[starts[ok]]
 
 
@@ -166,7 +171,7 @@ class WindowSet(Dataset):
             "x_sw": b.X[s:e], "x_flux": b.flux_in[s:e].unsqueeze(-1),
             "y_flux": b.flux_tg[tg], "y_dst": b.dst_s[tg], "y_kp": b.kp_s[tg],
             "y_storm": torch.tensor([st6]), "storm_flag": torch.tensor([float(self.window_storm_flags[i])]),
-            "y_persist": yp.repeat(3),
+            "y_persist": yp.repeat(len(HSTEPS)),
         }
 
 
