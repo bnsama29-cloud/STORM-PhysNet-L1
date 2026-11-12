@@ -98,3 +98,13 @@ def test_residual_transformer_four_outputs():
     m = SmoothedInput(FFNResTransformer(17, n_h=4)).eval()
     o = m(torch.randn(2, 72, 17), torch.randn(2, 72, 1), y_persist=torch.zeros(2, 4))
     assert tuple(o["flux_pred"].shape) == (2, 4)
+
+
+def test_time_budget_stops_before_any_new_run(tmp_path):
+    """--stop_after_hours 0 must exit cleanly (code 0) without training, so a Kaggle session can end and resume."""
+    r = subprocess.run([sys.executable, "train_block.py", "--repo", "..", "--block", "B", "--out", str(tmp_path),
+                        "--families", "lstm", "--seeds", "42", "--stop_after_hours", "0", "--horizons", "1,6,12,24"],
+                       cwd=ROOT / "pipeline", capture_output=True, text=True, timeout=600)
+    assert r.returncode == 0, r.stderr[-2000:]
+    assert "TIME BUDGET REACHED" in r.stdout
+    assert not list(tmp_path.glob("preds_*.npz")) and (tmp_path / "meta_B.npz").exists()

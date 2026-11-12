@@ -16,13 +16,17 @@ NOISE = "storm_bz,transformer_matched,tf_ffn_res,storm_fixed_ma,tf_res_fixed_ma"
 TEMPLATE = r'''# STORM-PhysNet journal extension, account __ACC__ of 3: block __B__ with 1, 6, 12 and 24 h horizons.
 # HOW TO USE: Kaggle -> Create -> New Notebook -> paste this whole file into the first cell.
 # Settings (right sidebar): Accelerator = GPU T4 x2, Internet = ON (needs a phone-verified account).
-# Then Save Version -> Save & Run All (Commit). Expected time: about 6 hours (9 models x 10 seeds).
-# When it finishes, download journal24___B__.zip from the Output tab and send it.
-# If it stops early (12 h limit or an error): open the notebook, Add Input -> Notebook Output -> this notebook's
-# previous version, then Save & Run All again; finished runs are skipped.
+# Then Save Version -> Save & Run All (Commit). All 90 runs need about 6 hours.
+# Each session stops starting new runs after SESSION_HOURS (below) and always writes journal24___B__.zip.
+# The last lines of the log say either "ALL 90 RUNS DONE" or "NOT FINISHED: x of 90".
+# TO CONTINUE ANOTHER DAY: open the notebook -> Add Input -> Notebook Output Files -> pick this notebook (its latest
+# version) -> Save Version -> Save & Run All again. Finished runs are skipped; nothing is repeated.
+# Send journal24___B__.zip only when the log says ALL 90 RUNS DONE.
+SESSION_HOURS = 10          # training time per session; keep <= 10.5 (Kaggle stops a session at 12 h)
 
 # ---- 1. setup: clone the repository at a fixed commit (Internet must be ON) ----
 import os, subprocess, shutil, glob, time, zipfile
+T0 = time.time()
 def sh(c): r = subprocess.run(c, shell=True, capture_output=True, text=True); print((r.stdout + r.stderr)[-1500:]); return r
 sh("pip -q install cdflib tensorboard tqdm tabulate 2>&1 | tail -1")
 REPO = "/kaggle/working/STORM-PhysNet-L1"
@@ -61,10 +65,13 @@ def run_parallel(cmd_for_split, tag):
         print(f"--- last lines gpu{i}"); print("\n".join(open(f"/kaggle/working/{tag}_gpu{i}.log").read().splitlines()[-8:]))
     assert all(c == 0 for c in codes), "a process failed: read the log lines above"
 
+left_h = max(0.0, SESSION_HOURS - (time.time() - T0) / 3600 - 0.4)   # 0.4 h margin: the last run started may take ~20 min
+print(f"training budget this session: {left_h:.1f} h")
 run_parallel(lambda seeds: f"python -u train_block.py --repo {REPO} --block {B} --out {OUT} --horizons 1,6,12,24 "
-                           f"--families __FAMS__ --noise_families __NOISE__ --probes --seeds {seeds} --keep_ckpt __KEEP__",
+                           f"--families __FAMS__ --noise_families __NOISE__ --probes --seeds {seeds} --keep_ckpt __KEEP__ "
+                           f"--stop_after_hours {left_h:.2f}",
              f"train_{B}")
-n = len(glob.glob(OUT + "/preds_*.npz")); print(n, "of 90 prediction files present"); assert n == 90, "some runs are missing"
+n = len(glob.glob(OUT + "/preds_*.npz"))
 
 # ---- 4. zip the results (download journal24___B__.zip from the Output tab) ----
 name = f"/kaggle/working/journal24_{B}.zip"
@@ -75,6 +82,8 @@ with zipfile.ZipFile(name, "w", zipfile.ZIP_DEFLATED) as zf:
         if os.path.isfile(f) and not f.endswith(".nc"): zf.write(f, "logs/" + os.path.basename(f))
 print(round(os.path.getsize(name) / 1e6, 1), "MB ->", name)
 print("Checkpoints kept in", OUT + f"/ckpt_{B}:", len(glob.glob(OUT + f"/ckpt_{B}/*.pt")), "files")
+print(f"session time {(time.time() - T0) / 3600:.1f} h")
+print("ALL 90 RUNS DONE: send", name) if n >= 90 else print(f"NOT FINISHED: {n} of 90 runs. Add this notebook's output as an Input and Save & Run All again to continue.")
 '''
 
 PROBE = r'''

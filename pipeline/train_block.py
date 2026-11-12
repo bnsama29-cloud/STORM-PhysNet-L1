@@ -39,6 +39,8 @@ ap.add_argument("--noise_families", default="storm_bz,transformer_matched,tf_ffn
                 help="families that get the noise probe (and the --probes set)")
 ap.add_argument("--probes", action="store_true", help="also run the driver-outage and index-latency probes")
 ap.add_argument("--horizons", default="1,6,12", help="forecast horizons in hours; 1,6,12 reproduces the AGERS 2026 runs")
+ap.add_argument("--stop_after_hours", type=float, default=None,
+                help="start no new run after this many hours (finished runs are kept; run again later to continue)")
 args = ap.parse_args()
 os.environ["STORM_HSTEPS"] = args.horizons          # read by storm_pipeline.data at import time
 
@@ -160,11 +162,21 @@ def predict(model, loader, sigma=0.0, aux=False, probe=None, logvar=False):
 
 
 runlog = OUT / f"runlog_{args.block}.jsonl"
+T_START = time.time()
+
+
+def out_of_time():
+    return args.stop_after_hours is not None and time.time() - T_START > args.stop_after_hours * 3600
+
+
+stopped = False
 for seed in SEEDS:                               # seed-major order so that partial results are balanced across families
     for fam in FAMILIES:
         pf = OUT / f"preds_{args.block}_{fam}_s{seed}.npz"
         if pf.exists():
             continue
+        if out_of_time():
+            stopped = True; break
         t0 = time.time()
         torch.manual_seed(seed); np.random.seed(seed)
         cfg = copy.deepcopy(base_cfg); s = SPEC[fam]
@@ -205,5 +217,8 @@ for seed in SEEDS:                               # seed-major order so that part
         del model, trainer
         if DEV.type == "cuda": torch.cuda.empty_cache()
 
+    if stopped:
+        break
+
 import shutil; shutil.rmtree(OUT / f"tb_tmp_{TMPTAG}", ignore_errors=True)
-log("BLOCK COMPLETE")
+log(f"TIME BUDGET REACHED after {args.stop_after_hours} h: run again to continue" if stopped else "BLOCK COMPLETE")
