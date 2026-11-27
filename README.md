@@ -2,8 +2,8 @@
 
 **A multi-horizon Transformer that forecasts relativistic (>2 MeV) electron flux at geostationary orbit 1, 6 and 12 hours ahead, and transfers it to the Indian GSAT-19 GRASP sensor.**
 
-Samarth B N, Samrudh S Malali, Dhyan M, Sanjana H V. RV College of Engineering, Bangalore.
-IEEE AGERS 2026 (under review).
+Samarth B N, Samrudh S Malali, Dhyan M, Sanjana H V, Pratibha K. RV College of Engineering, Bengaluru, India.
+IEEE AGERS 2026, Jakarta, 17–18 December 2026 (accepted; to appear in the proceedings).
 
 Electrons above 2 MeV at geostationary orbit charge spacecraft dielectrics and can damage onboard electronics. STORM-PhysNet predicts the GOES-15 >2 MeV log-flux from the past 72 h of flux and OMNI solar-wind and geomagnetic data. This repository has the full code, input data, every prediction, and every table and figure.
 
@@ -37,9 +37,9 @@ PE is prediction efficiency relative to climatology (1 is perfect). Each value i
 | STORM-PhysNet, no gate | 344 k | 0.977 | 0.867 | 0.805 | 0.28 |
 
 **Key findings**
-- **1 h.** STORM-PhysNet beats the matched Transformer in every test period. The gain is +0.008 PE (paired t-test, p = 3.5 × 10⁻¹⁸) and comes from the residual heads.
+- **1 h.** STORM-PhysNet beats the matched Transformer in every test period. The gain is +0.008 PE (paired t-test on the ten seed means, p = 5 × 10⁻⁹; significant in each test period after Bonferroni correction) and comes from the residual heads.
 - **6–12 h.** All learned models are far above persistence, and the solar-wind inputs add +0.034 and +0.060 PE. STORM-PhysNet ties the matched Transformer at 6 h and trails it by 0.010 at 12 h.
-- **Robustness to noisy drivers.** With unit-variance noise on the inputs, STORM-PhysNet keeps 1 h PE at **0.970**; the matched Transformer falls to 0.892. The delay stage is responsible: without it, PE drops by 0.010 / 0.043 / 0.067 at 1 / 6 / 12 h (Holm-corrected p < 10⁻⁹). Removing the gate changes nothing.
+- **Robustness to noisy drivers.** With unit-variance noise on the inputs, STORM-PhysNet keeps 1 h PE at **0.970**; the matched Transformer falls to 0.892. The smoothing done by the delay stage is responsible: without it, PE drops by 0.010 / 0.043 / 0.067 at 1 / 6 / 12 h. A fixed, non-learned average of hours t−1 and t performs the same as the learned delay. Removing the gate changes nothing on clean data.
 - **Missing drivers and index latency.** With no driver data at all, STORM-PhysNet keeps 12 h PE 0.656 (residual Transformer 0.614, matched 0.612), and here the gate helps (+0.034 at 12 h). Kp and Dst arriving 3 h late cost every model at most 0.004.
 - **Transfer to GSAT-19 GRASP.** Without retraining, every persistence-anchored model transfers well (12 h PE 0.733–0.761; STORM-PhysNet 0.961 / 0.827 / 0.738 at 1 / 6 / 12 h). The matched Transformer gets 0.887 / 0.751 / 0.644. After fine-tuning all reach about 0.96 / 0.86 / 0.80.
 
@@ -137,10 +137,11 @@ Follow each provider's terms of use.
 ```bibtex
 @inproceedings{samarth2026stormphysnet,
   title     = {STORM-PhysNet: Multi-Horizon Forecasting of Relativistic Electron Hazards to Geostationary Satellites with Transfer to GSAT-19},
-  author    = {Samarth B N and Samrudh S Malali and Dhyan M and Sanjana H V},
-  booktitle = {IEEE Asia-Pacific Conference on Geoscience, Electronics and Remote Sensing Technology (AGERS)},
+  author    = {Samarth B N and Samrudh S Malali and Dhyan M and Sanjana H V and Pratibha K},
+  booktitle = {2026 IEEE Asia-Pacific Conference on Geoscience, Electronics and Remote Sensing Technology (AGERS)},
+  address   = {Jakarta, Indonesia},
   year      = {2026},
-  note      = {Under review}
+  note      = {Accepted; to appear}
 }
 ```
 
